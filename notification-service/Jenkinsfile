@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         
-        DOCKER_HUB_USER = 'shakilaaulia245' 
+        DOCKER_HUB_USER = 'kelompokdealan' 
         IMAGE_NAME      = 'notification-service'
         IMAGE_TAG       = 'latest'
     }
@@ -43,7 +43,7 @@ pipeline {
         }
         stage('Push Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-Dealan', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                withCredentials([usernamePassword(credentialsId: 'dealan-docker', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                     sh "echo ${PASS} | docker login -u ${USER} --password-stdin"
                     sh "docker push ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
                 }
