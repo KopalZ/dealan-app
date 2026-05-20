@@ -9,8 +9,8 @@ RUN go mod tidy
 
 COPY . .
 
-RUN go build -o main ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/main.go
 
-EXPOSE 8085
+EXPOSE 8086
 
 CMD ["./main"]
