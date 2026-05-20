@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-deployment
+  labels:
+    app: user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: user-container
+        image: kelompokdealan/user-service:latest # Menembak ke repositori user-service di Docker Hub bersama
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8082 # Port internal aplikasi User Service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-svc # Nama DNS internal yang didaftarkan di ingress.yaml
+spec:
+  type: ClusterIP
+  selector:
+    app: user
+  ports:
+  - protocol: TCP
+    port: 8082
+    targetPort: 8082

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driver-deployment
+  labels:
+    app: driver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driver
+  template:
+    metadata:
+      labels:
+        app: driver
+    spec:
+      containers:
+      - name: driver-container
+        image: kelompokdealan/driver-service:latest # Menembak ke repositori driver-service di Docker Hub bersama
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8083 # Port internal aplikasi Driver Service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: driver-service-svc # Nama DNS internal yang didaftarkan di ingress.yaml
+spec:
+  type: ClusterIP
+  selector:
+    app: driver
+  ports:
+  - protocol: TCP
+    port: 8083
+    targetPort: 8083

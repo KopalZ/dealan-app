@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_USER  = 'kelompokdealan'
+        DOCKER_TOKEN = 'dckr_pat_w0tn8ZmBXAsXwKIGuDNMcM9UYKk'
+        IMAGE_NAME   = 'kelompokdealan/auth-service'
+        SERVICE_DIR  = 'auth-service'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code from GitHub...'
+                checkout scm
+            }
+        }
+
+        stage('Unit Tests') {
+            steps {
+                echo 'Running Unit Tests...'
+                // Menggunakan cd /d agar perpindahan drive di Windows aman, digabung dengan &&
+                bat "cd /d ${env.SERVICE_DIR} && go test -v ./service/..."
+            }
+        }
+
+        stage('Lint/Vet') {
+            steps {
+                echo 'Running Go Vet...'
+                bat "cd /d ${env.SERVICE_DIR} && go vet ./..."
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                echo "Building Docker Image: ${env.IMAGE_NAME}:latest"
+                bat "cd /d ${env.SERVICE_DIR} && docker build -t ${env.IMAGE_NAME}:latest ."
+            }
+        }
+
+        stage('Functional Tests') {
+            steps {
+                echo 'Running Functional Tests...'
+                bat "cd /d ${env.SERVICE_DIR} && go test -v ./tests/..."
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                echo 'Logging in to Docker Hub and Pushing Image...'
+                // Sintaks Windows Batch untuk meneruskan token ke perintah docker login
+                bat "echo ${env.DOCKER_TOKEN} | docker login -u ${env.DOCKER_USER} --password-stdin"
+                bat "docker push ${env.IMAGE_NAME}:latest"
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                echo 'Deploying to Minikube Cluster...'
+                bat "cd /d ${env.SERVICE_DIR} && kubectl apply -f auth-k8s.yaml"
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                echo 'Verifying deployment status...'
+                bat "kubectl rollout status deployment/auth-deployment"
+            }
+        }
+    }
+
+    post {
+        success { echo 'Selamat! Pipeline Auth Service Sukses di Windows (Kotak Hijau).' }
+        failure { echo 'Pipeline Gagal. Periksa log Windows Batch di atas untuk melihat error.' }
+    }
+}
