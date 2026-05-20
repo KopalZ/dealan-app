@@ -18,19 +18,25 @@ pipeline {
 
         stage('Unit Tests') {
             steps {
-                sh 'go test ./... || true'
+                dir('chat-service') {
+                    sh 'go test ./... || true'
+                }
             }
         }
 
         stage('Lint/Vet') {
             steps {
-                sh 'go vet ./... || true'
+                dir('chat-service') {
+                    sh 'go vet ./... || true'
+                }
             }
         }
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:latest .'
+                dir('chat-service') {
+                    sh 'docker build -t $IMAGE_NAME:latest .'
+                }
             }
         }
 
@@ -56,7 +62,9 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f chat-k8s.yaml'
+                dir('chat-service') {
+                    sh 'kubectl apply -f chat-k8s.yaml'
+                }
             }
         }
 

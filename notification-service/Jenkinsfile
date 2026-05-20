@@ -2,8 +2,10 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USER = "kelompokdealan"
-        GIT_REPO_URL = "https://github.com/shakilaaulia/Dealan.git"
+        DOCKER_notification  = 'kelompokdealan'
+        DOCKER_TOKEN = 'dckr_pat_w0tn8ZmBXAsXwKIGuDNMcM9UYKk'
+        IMAGE_NAME   = 'kelompokdealan/notification-service'
+        SERVICE_DIR  = 'notification-service'
     }
 
     stages {
@@ -44,12 +46,10 @@ pipeline {
 
         stage('Build & Push Image') {
             steps {
-                echo 'Building and Pushing Auth Service Image...'
-                // Menggunakan tanda kutip tiga ganda (""") agar variable Jenkins ${DOCKER_USER} bisa terbaca di perintah Windows bat
-                bat """
-                cd /d auth-service && docker build -t ${DOCKER_USER}/auth-service:latest .
-                docker push ${DOCKER_USER}/auth-service:latest
-                """
+                echo 'Logging in to Docker Hub and Pushing Image...'
+                // Sintaks Windows Batch untuk meneruskan token ke perintah docker login
+                bat "echo ${env.DOCKER_TOKEN} | docker login -u ${env.DOCKER_notification} --password-stdin"
+                bat "docker push ${env.IMAGE_NAME}:latest"
             }
         }
 
@@ -69,8 +69,7 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 echo 'Verifying deployment status...'
-                bat 'kubectl get pods'
-                bat 'kubectl get services'
+                bat "kubectl rollout status deployment/notification-deployment"
             }
         }
     }
