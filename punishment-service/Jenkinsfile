@@ -20,5 +20,15 @@ pipeline {
                 sh "docker build -t ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
+
+        // INI STAGE BARU UNTUK LOGIN & PUSH KE DOCKER HUB
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-Dealan', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    sh "echo ${PASS} | docker login -u ${USER} --password-stdin"
+                    sh "docker push ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
     }
 }
