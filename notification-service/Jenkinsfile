@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_notification  = 'kelompokdealan'
+        DOCKER_USER  = 'kelompokdealan'
         DOCKER_TOKEN = 'dckr_pat_w0tn8ZmBXAsXwKIGuDNMcM9UYKk'
         IMAGE_NAME   = 'kelompokdealan/notification-service'
         SERVICE_DIR  = 'notification-service'
@@ -49,7 +49,7 @@ pipeline {
             steps {
                 echo 'Logging in to Docker Hub and Pushing Image...'
                 // Sintaks Windows Batch untuk meneruskan token ke perintah docker login
-                bat "echo ${env.DOCKER_TOKEN} | docker login -u ${env.DOCKER_notification} --password-stdin"
+                bat "echo ${env.DOCKER_TOKEN}| docker login -u ${env.DOCKER_USER} --password-stdin"
                 bat "docker push ${env.IMAGE_NAME}:latest"
             }
         }
@@ -64,7 +64,7 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 echo 'Verifying deployment status...'
-                bat "kubectl rollout status deployment/notification-deployment"
+                bat "kubectl rollout status deployment/notification-service-deployment"
             }
         }
     }
