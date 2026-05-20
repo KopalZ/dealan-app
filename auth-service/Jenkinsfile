@@ -85,7 +85,7 @@ pipeline {
                         kubectl get nodes
 
                         echo Deploying Application:
-                        kubectl apply -f auth-k8s.yaml --validate=false
+                        kubectl apply -f auth-service/auth-k8s.yaml --validate=false
                         '''
                     }
                 }
