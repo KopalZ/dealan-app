@@ -2,65 +2,89 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "shakilaaulia245/map-route-service"
-        CONTAINER_NAME = "map-route-service"
-        PORT = "8085"
+        DOCKER_HUB_USER = 'kelompokdealan'
+        DOCKER_HUB_ID   = 'dealan-docker'
+        APP_NAME        = 'map-route-service'
     }
 
     stages {
 
-        stage('Checkout') {
+        stage('1. Checkout Code') {
             steps {
-                checkout scm
+                echo 'Checking out source code...'
             }
         }
 
-        stage('Unit Test') {
+        stage('2. Unit Tests') {
             steps {
                 dir('map-route-service') {
-                    sh 'go test ./... || true'
+
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+
+                        bat 'go test ./service/...'
+                    }
                 }
             }
         }
 
-        stage('Lint / Vet') {
+        stage('3. Lint and Vet') {
             steps {
                 dir('map-route-service') {
-                    sh 'go vet ./... || true'
+
+                    bat 'go vet ./...'
                 }
             }
         }
 
-        stage('Build Docker Image') {
+        stage('4. Build Docker Image') {
             steps {
                 dir('map-route-service') {
-                    sh 'docker build -t $IMAGE_NAME .'
+
+                    bat "docker build -t ${DOCKER_HUB_USER}/${APP_NAME}:latest ."
                 }
             }
         }
 
-        stage('Push Docker Image') {
+        stage('5. Functional Tests') {
             steps {
-                withCredentials([string(credentialsId: 'dockerhub-token', variable: 'DOCKER_TOKEN')]) {
+                dir('map-route-service') {
 
-                    sh 'echo $DOCKER_TOKEN | docker login -u shakilaaulia245 --password-stdin'
-                    sh 'docker push $IMAGE_NAME'
+                    bat 'go test ./tests/...'
                 }
             }
         }
 
-        stage('Run Container (Functional Test)') {
+        stage('6. Push to Docker Hub') {
             steps {
-                sh 'docker stop $CONTAINER_NAME || true'
-                sh 'docker rm $CONTAINER_NAME || true'
 
-                sh 'docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $IMAGE_NAME'
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_ID}", passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+
+                    bat 'echo %PASS%|docker login -u %USER% --password-stdin'
+
+                    bat "docker push ${DOCKER_HUB_USER}/${APP_NAME}:latest"
+                }
             }
         }
 
-        stage('Verify') {
+        stage('7. Deploy to Kubernetes') {
             steps {
-                sh 'docker ps | grep $CONTAINER_NAME'
+                dir('map-route-service') {
+
+                    withCredentials([file(credentialsId: 'minikube-dealan', variable: 'KUBECONFIG_FILE')]) {
+
+                        bat 'kubectl --kubeconfig="%KUBECONFIG_FILE%" apply -f map-route-service-k8s.yaml --validate=false'
+                    }
+                }
+            }
+        }
+
+        stage('8. Verify Deployment') {
+            steps {
+
+                withCredentials([file(credentialsId: 'minikube-dealan', variable: 'KUBECONFIG_FILE')]) {
+
+                    bat 'kubectl --kubeconfig="%KUBECONFIG_FILE%" get pods'
+                }
             }
         }
     }

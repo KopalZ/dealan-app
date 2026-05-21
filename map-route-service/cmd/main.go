@@ -19,9 +19,9 @@ func main() {
 
 	mux.HandleFunc("/route", mapHandler.GetRoute)
 
-	log.Println("Map Route Service running on :8085")
+	log.Println("Map Route Service running on :8088")
 
-	if err := http.ListenAndServe(":8085", mux); err != nil {
+	if err := http.ListenAndServe(":8088", mux); err != nil {
 		log.Fatal(err)
 	}
 }
