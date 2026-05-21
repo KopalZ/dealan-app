@@ -2,54 +2,92 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "shakilaaulia245/promo-service"
-        CONTAINER_NAME = "promo-service"
-        PORT = "8086"
+        DOCKER_HUB_USER = 'kelompokdealan'
+        DOCKER_HUB_ID   = 'dealan-docker'
+        APP_NAME        = 'promo-service'
     }
 
     stages {
 
-        stage('Checkout') {
+        stage('1. Checkout Code') {
             steps {
-                checkout scm
+                echo 'Checking out source code...'
             }
         }
 
-        stage('Clean Docker') {
-            steps {
-                sh 'docker system prune -af || true'
-                sh 'docker builder prune -af || true'
-            }
-        }
-
-        stage('Build Docker Image') {
+        stage('2. Unit Tests') {
             steps {
                 dir('promo-service') {
-                    sh 'docker build --no-cache -t $IMAGE_NAME .'
+
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+
+                        bat 'go test ./service/...'
+                    }
                 }
             }
         }
 
-        stage('Push Docker Image') {
+        stage('3. Lint and Vet') {
             steps {
-                withCredentials([string(credentialsId: 'dockerhub-token', variable: 'DOCKER_TOKEN')]) {
-                    sh 'echo $DOCKER_TOKEN | docker login -u shakilaaulia245 --password-stdin'
-                    sh 'docker push $IMAGE_NAME'
+                dir('promo-service') {
+
+                    bat 'go vet ./...'
                 }
             }
         }
 
-        stage('Run Container') {
+        stage('4. Build Docker Image') {
             steps {
-                sh 'docker stop $CONTAINER_NAME || true'
-                sh 'docker rm $CONTAINER_NAME || true'
-                sh 'docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $IMAGE_NAME'
+                dir('promo-service') {
+
+                    bat "docker build -t ${DOCKER_HUB_USER}/${APP_NAME}:latest ."
+                }
             }
         }
 
-        stage('Verify') {
+        stage('5. Functional Tests') {
             steps {
-                sh 'docker ps | grep $CONTAINER_NAME'
+                dir('promo-service') {
+
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+
+                        bat 'go test ./tests/...'
+                    }
+                }
+            }
+        }
+
+        stage('6. Push to Docker Hub') {
+            steps {
+
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_ID}", passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+
+                    bat 'echo %PASS%|docker login -u %USER% --password-stdin'
+
+                    bat "docker push ${DOCKER_HUB_USER}/${APP_NAME}:latest"
+                }
+            }
+        }
+
+        stage('7. Deploy to Kubernetes') {
+            steps {
+                dir('promo-service') {
+
+                    withCredentials([file(credentialsId: 'minikube-dealan', variable: 'KUBECONFIG_FILE')]) {
+
+                        bat 'kubectl --kubeconfig=\"%KUBECONFIG_FILE%\" apply -f promo-service-k8s.yaml --validate=false'
+                    }
+                }
+            }
+        }
+
+        stage('8. Verify Deployment') {
+            steps {
+
+                withCredentials([file(credentialsId: 'minikube-dealan', variable: 'KUBECONFIG_FILE')]) {
+
+                    bat 'kubectl --kubeconfig=\"%KUBECONFIG_FILE%\" get pods'
+                }
             }
         }
     }
