@@ -2,6 +2,9 @@ package domain
 
 import (
 	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // PaymentRequest merepresentasikan data input untuk membuat transaksi pembayaran baru.
@@ -24,7 +27,7 @@ type PaymentResponse struct {
 
 // Transaction merepresentasikan tabel 'transactions' di PostgreSQL untuk menyimpan data pembayaran.
 type Transaction struct {
-	ID                string     `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	ID                string     `gorm:"type:uuid;primaryKey" json:"id"`
 	TransactionID     string     `gorm:"type:varchar(50);not null;uniqueIndex" json:"transaction_id"` // Format: TRX-YYYYMMDD-XXXXX
 	OrderID           string     `gorm:"type:varchar(50);not null;index" json:"order_id"`
 	UserID            string     `gorm:"type:uuid;not null;index" json:"user_id"`
@@ -42,18 +45,34 @@ type Transaction struct {
 	UpdatedAt         time.Time  `json:"updated_at"`
 }
 
+// BeforeCreate dijalankan sebelum data Transaction disimpan ke database.
+func (t *Transaction) BeforeCreate(tx *gorm.DB) (err error) {
+	if t.ID == "" {
+		t.ID = uuid.New().String()
+	}
+	return
+}
+
 // DriverWallet merepresentasikan tabel 'driver_wallets' untuk menyimpan saldo driver.
 type DriverWallet struct {
-	ID          string    `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	ID          string    `gorm:"type:uuid;primaryKey" json:"id"`
 	DriverID    string    `gorm:"type:uuid;not null;uniqueIndex" json:"driver_id"`
 	Balance     float64   `gorm:"type:decimal(15,2);default:0" json:"balance"`
 	TotalEarned float64   `gorm:"type:decimal(15,2);default:0" json:"total_earned"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+// BeforeCreate dijalankan sebelum data DriverWallet disimpan ke database.
+func (w *DriverWallet) BeforeCreate(tx *gorm.DB) (err error) {
+	if w.ID == "" {
+		w.ID = uuid.New().String()
+	}
+	return
+}
+
 // WalletTransaction merepresentasikan tabel 'wallet_transactions' untuk mencatat mutasi saldo driver.
 type WalletTransaction struct {
-	ID           string    `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	ID           string    `gorm:"type:uuid;primaryKey" json:"id"`
 	DriverID     string    `gorm:"type:uuid;not null;index" json:"driver_id"`
 	Type         string    `gorm:"type:varchar(10);not null" json:"type"` // credit (masuk), debit (keluar)
 	Amount       float64   `gorm:"type:decimal(15,2);not null" json:"amount"`
@@ -63,13 +82,29 @@ type WalletTransaction struct {
 	CreatedAt    time.Time `json:"created_at"`
 }
 
+// BeforeCreate dijalankan sebelum data WalletTransaction disimpan ke database.
+func (wt *WalletTransaction) BeforeCreate(tx *gorm.DB) (err error) {
+	if wt.ID == "" {
+		wt.ID = uuid.New().String()
+	}
+	return
+}
+
 // PaymentLog merepresentasikan tabel 'payment_logs' untuk audit trail pembayaran.
 type PaymentLog struct {
-	ID            string    `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	ID            string    `gorm:"type:uuid;primaryKey" json:"id"`
 	TransactionID string    `gorm:"type:varchar(50);not null;index" json:"transaction_id"`
 	Event         string    `gorm:"type:varchar(50);not null" json:"event"` // e.g., created, webhook_received
 	Payload       string    `gorm:"type:jsonb" json:"payload"`              // Menyimpan payload JSON mentah
 	CreatedAt     time.Time `json:"created_at"`
+}
+
+// BeforeCreate dijalankan sebelum data PaymentLog disimpan ke database.
+func (l *PaymentLog) BeforeCreate(tx *gorm.DB) (err error) {
+	if l.ID == "" {
+		l.ID = uuid.New().String()
+	}
+	return
 }
 
 // IdempotencyKey merepresentasikan tabel 'idempotency_keys' untuk mencegah double payment.

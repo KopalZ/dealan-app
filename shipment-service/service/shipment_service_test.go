@@ -3,13 +3,14 @@ package service_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"testing"
 
+	"github.com/glebarez/sqlite"
 	"github.com/shakilaaulia/Dealan/shipment-service/domain"
 	"github.com/shakilaaulia/Dealan/shipment-service/repository"
 	"github.com/shakilaaulia/Dealan/shipment-service/service"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 

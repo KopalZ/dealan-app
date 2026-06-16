@@ -4,6 +4,9 @@ import (
 	"database/sql/driver"
 	"errors"
 	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // JSONB mendefinisikan tipe data custom untuk menyimpan data JSON mentah di PostgreSQL.
@@ -59,7 +62,7 @@ type ProofData struct {
 
 // Shipment merepresentasikan tabel 'shipments' di PostgreSQL untuk menyimpan data logistik barang.
 type Shipment struct {
-	ID            string    `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	ID            string    `gorm:"type:uuid;primaryKey" json:"id"`
 	OrderID       string    `gorm:"type:varchar(50);not null;uniqueIndex" json:"order_id"`
 	TrackingCode  string    `gorm:"type:varchar(50);not null;uniqueIndex" json:"tracking_code"` // Format: SHP-YYYYMMDD-XXXXX
 	Status        string    `gorm:"type:varchar(20);not null;default:'pending'" json:"status"`   // pending, pickup, ongoing, delivered, cancelled
@@ -67,4 +70,12 @@ type Shipment struct {
 	ProofImageURL string    `gorm:"type:varchar(500)" json:"proof_image_url"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
+}
+
+// BeforeCreate dijalankan sebelum data Shipment disimpan ke database.
+func (s *Shipment) BeforeCreate(tx *gorm.DB) (err error) {
+	if s.ID == "" {
+		s.ID = uuid.New().String()
+	}
+	return
 }
