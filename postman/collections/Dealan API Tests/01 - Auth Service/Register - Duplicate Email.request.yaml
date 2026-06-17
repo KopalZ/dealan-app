@@ -1,0 +1,24 @@
+$kind: http-request
+name: Register - Duplicate Email
+method: POST
+url: 'http://localhost:3001/auth/register'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "testuser@example.com",
+      "password": "password123",
+      "role": "user",
+      "nama": "Test User",
+      "nomor_hp": "081234567890"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is not 201 (expect 500 or 409)", function() { pm.expect(pm.response.code).to.not.eql(201); });
+      pm.test("Response has error field", function() { var json = pm.response.json(); pm.expect(json).to.have.property("error"); });

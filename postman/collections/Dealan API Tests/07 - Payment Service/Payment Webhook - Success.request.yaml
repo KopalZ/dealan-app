@@ -1,0 +1,20 @@
+$kind: http-request
+name: Payment Webhook - Success
+method: POST
+url: 'http://localhost:3010/payments/webhook'
+order: 6000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "transaction_id": "{{transactionId}}",
+      "status": "success"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function() { pm.response.to.have.status(200); });

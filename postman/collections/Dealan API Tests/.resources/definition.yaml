@@ -1,0 +1,3 @@
+$kind: collection
+name: Dealan API Tests
+description: 'Comprehensive API tests for the Dealan microservices platform covering Auth, Driver, Order, Matching, Location, Map Route, Payment, Notification, and Rating services.'

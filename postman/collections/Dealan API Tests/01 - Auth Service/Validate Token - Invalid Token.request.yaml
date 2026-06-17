@@ -1,0 +1,14 @@
+$kind: http-request
+name: Validate Token - Invalid Token
+method: POST
+url: 'http://localhost:3001/auth/validate'
+order: 8000
+headers:
+  - key: Authorization
+    value: 'Bearer invalidtoken123'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 401", function() { pm.response.to.have.status(401); });
+      pm.test("Response has error field", function() { var json = pm.response.json(); pm.expect(json).to.have.property("error"); });

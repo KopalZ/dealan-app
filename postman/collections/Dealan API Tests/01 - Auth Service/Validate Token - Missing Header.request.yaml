@@ -1,0 +1,11 @@
+$kind: http-request
+name: Validate Token - Missing Header
+method: POST
+url: 'http://localhost:3001/auth/validate'
+order: 7000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 401", function() { pm.response.to.have.status(401); });
+      pm.test("Response body contains Authorization header tidak ditemukan", function() { pm.expect(pm.response.text()).to.include("Authorization header tidak ditemukan"); });

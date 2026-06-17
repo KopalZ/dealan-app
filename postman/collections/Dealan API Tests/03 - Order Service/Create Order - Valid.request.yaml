@@ -1,0 +1,26 @@
+$kind: http-request
+name: Create Order - Valid
+method: POST
+url: 'http://localhost:3004/api/v1/orders/'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "user_id": "{{userId}}",
+      "detail_paket": {
+        "jenis": "send",
+        "berat": 2.5,
+        "deskripsi": "Paket dokumen"
+      }
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 201 or 200", function() { pm.expect([200, 201]).to.include(pm.response.code); });
+      pm.test("Response has id or order_id field", function() { var json = pm.response.json(); pm.expect(json.id || json.order_id).to.exist; });
+      pm.environment.set("orderId", pm.response.json().id || pm.response.json().order_id);

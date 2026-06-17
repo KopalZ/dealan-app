@@ -1,0 +1,10 @@
+$kind: http-request
+name: Get Route - GET
+method: GET
+url: 'http://localhost:3009/route?origin=-6.9175,107.6191&destination=-6.8844,107.6107'
+order: 2000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function() { pm.response.to.have.status(200); });

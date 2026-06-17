@@ -1,0 +1,21 @@
+$kind: http-request
+name: Update Location - Missing Driver ID
+method: PUT
+url: 'http://localhost:3003/drivers/location'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "lat": -6.9175,
+      "long": 107.6191
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 400 or 401", function() { pm.expect([400, 401]).to.include(pm.response.code); });
+      pm.test("Response has error field", function() { var json = pm.response.json(); pm.expect(json).to.have.property("error"); });
