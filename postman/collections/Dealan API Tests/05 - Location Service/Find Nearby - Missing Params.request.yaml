@@ -1,0 +1,11 @@
+$kind: http-request
+name: Find Nearby - Missing Params
+method: GET
+url: 'http://localhost:3008/api/v1/locations/nearby'
+order: 3000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 400", function() { pm.response.to.have.status(400); });
+      pm.test("Response has error field", function() { var json = pm.response.json(); pm.expect(json).to.have.property("error"); });

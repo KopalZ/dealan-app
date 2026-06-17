@@ -1,0 +1,28 @@
+$kind: http-request
+name: Register - Valid User
+method: POST
+url: 'http://localhost:3001/auth/register'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "testuser@example.com",
+      "password": "password123",
+      "role": "user",
+      "nama": "Test User",
+      "nomor_hp": "081234567890"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 201", function() { pm.response.to.have.status(201); });
+      pm.test("Response has token", function() { var json = pm.response.json(); pm.expect(json).to.have.property("token"); });
+      pm.test("Response has account_id", function() { var json = pm.response.json(); pm.expect(json).to.have.property("account_id"); });
+      pm.test("Response has role equal to user", function() { var json = pm.response.json(); pm.expect(json.role).to.eql("user"); });
+      pm.environment.set("userToken", pm.response.json().token);
+      pm.environment.set("userId", pm.response.json().account_id);

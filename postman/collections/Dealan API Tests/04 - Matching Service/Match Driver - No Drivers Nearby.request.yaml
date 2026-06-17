@@ -1,0 +1,23 @@
+$kind: http-request
+name: Match Driver - No Drivers Nearby
+method: POST
+url: 'http://localhost:3005/api/v1/match'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "order_id": 999,
+      "lat": 0.0,
+      "lng": 0.0,
+      "radius": 100
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 404", function() { pm.response.to.have.status(404); });
+      pm.test("Response has error field", function() { var json = pm.response.json(); pm.expect(json).to.have.property("error"); });

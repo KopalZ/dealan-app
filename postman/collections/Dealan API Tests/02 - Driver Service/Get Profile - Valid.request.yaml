@@ -1,0 +1,15 @@
+$kind: http-request
+name: Get Profile - Valid
+method: GET
+url: 'http://localhost:3003/drivers/profile'
+order: 5000
+headers:
+  - key: X-Driver-ID
+    value: '{{driverId}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function() { pm.response.to.have.status(200); });
+      pm.test("Response has id field", function() { var json = pm.response.json(); pm.expect(json).to.have.property("id"); });
+      pm.test("Response has nama field", function() { var json = pm.response.json(); pm.expect(json).to.have.property("nama"); });

@@ -30,7 +30,7 @@ func main() {
 	dbURL := os.Getenv("DB_URL")
 	if dbURL == "" {
 		// Menggunakan default local untuk pengembangan (diubah ke 127.0.0.1 biar aman)
-		dbURL = "postgres://dealan:dealan_secret@127.0.0.1:5432/dealan_db?sslmode=disable"
+		dbURL = "postgres://postgres:password@localhost:5432/dealan?sslmode=disable"
 	}
 
 	jwtSecret := os.Getenv("JWT_SECRET")
@@ -94,7 +94,6 @@ func main() {
 	r.POST("/auth/login", handler.Login)
 	r.POST("/auth/validate", handler.Validate)
 
-	// Menjalankan server di port 3001 sesuai spesifikasi docker-compose
 	log.Println("Auth Service berjalan pada port :3001")
 	if err := r.Run(":3001"); err != nil {
 		log.Fatalf("Gagal menjalankan server HTTP: %v", err)

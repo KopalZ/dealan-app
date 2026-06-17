@@ -1,0 +1,23 @@
+$kind: http-request
+name: Match Driver - Valid
+method: POST
+url: 'http://localhost:3005/api/v1/match'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "order_id": 1,
+      "lat": -6.9175,
+      "lng": 107.6191,
+      "radius": 5000
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function() { pm.response.to.have.status(200); });
+      pm.test("Response has data field with driver_id", function() { var json = pm.response.json(); pm.expect(json).to.have.property("data"); pm.expect(json.data).to.have.property("driver_id"); });
