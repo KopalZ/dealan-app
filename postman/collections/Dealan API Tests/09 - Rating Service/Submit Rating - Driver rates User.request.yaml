@@ -1,0 +1,26 @@
+$kind: http-request
+name: Submit Rating - Driver rates User
+method: POST
+url: 'http://localhost:3012/rating/submit'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "order_id": "{{orderId}}",
+      "reviewer_id": "{{driverId}}",
+      "reviewer_role": "driver",
+      "target_id": "{{userId}}",
+      "target_role": "user",
+      "rating_score": 4,
+      "comment": "Good customer."
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function() { pm.response.to.have.status(200); });
+      pm.test("Response has review_id", function() { var json = pm.response.json(); pm.expect(json).to.have.property("review_id"); });

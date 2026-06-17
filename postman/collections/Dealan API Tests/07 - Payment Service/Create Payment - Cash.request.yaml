@@ -1,0 +1,27 @@
+$kind: http-request
+name: Create Payment - Cash
+method: POST
+url: 'http://localhost:3010/payments/create'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: X-Idempotency-Key
+    value: idem-key-001
+body:
+  type: json
+  content: |-
+    {
+      "order_id": "{{orderId}}",
+      "nominal": 50000,
+      "metode_pembayaran": "cash",
+      "user_id": "{{userId}}",
+      "driver_id": "{{driverId}}"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200 or 201", function() { pm.expect([200, 201]).to.include(pm.response.code); });
+      pm.test("Response has transaction_id", function() { var json = pm.response.json(); pm.expect(json).to.have.property("transaction_id"); });
+      pm.environment.set("transactionId", pm.response.json().transaction_id);

@@ -1,0 +1,22 @@
+$kind: http-request
+name: Update Location
+method: POST
+url: 'http://localhost:3008/api/v1/locations/update'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "driver_id": 1,
+      "latitude": -6.9175,
+      "longitude": 107.6191
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function() { pm.response.to.have.status(200); });
+      pm.test("Response has message field", function() { var json = pm.response.json(); pm.expect(json).to.have.property("message"); });

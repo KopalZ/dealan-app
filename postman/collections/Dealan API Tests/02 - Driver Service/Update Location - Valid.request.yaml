@@ -1,0 +1,22 @@
+$kind: http-request
+name: Update Location - Valid
+method: PUT
+url: 'http://localhost:3003/drivers/location'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: X-Driver-ID
+    value: '{{driverId}}'
+body:
+  type: json
+  content: |-
+    {
+      "lat": -6.9175,
+      "long": 107.6191
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function() { pm.response.to.have.status(200); });

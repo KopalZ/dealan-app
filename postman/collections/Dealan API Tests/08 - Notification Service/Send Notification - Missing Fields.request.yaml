@@ -1,0 +1,18 @@
+$kind: http-request
+name: Send Notification - Missing Fields
+method: POST
+url: 'http://localhost:3011/notification/send'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 400 or 200", function() { pm.expect([400, 200]).to.include(pm.response.code); });
+      pm.test("Response body is not empty", function() { pm.expect(pm.response.text()).to.not.be.empty; });

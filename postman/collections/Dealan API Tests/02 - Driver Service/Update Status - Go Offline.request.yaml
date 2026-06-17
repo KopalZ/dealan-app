@@ -1,0 +1,22 @@
+$kind: http-request
+name: Update Status - Go Offline
+method: PATCH
+url: 'http://localhost:3003/drivers/status'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: X-Driver-ID
+    value: '{{driverId}}'
+body:
+  type: json
+  content: |-
+    {
+      "is_online": false,
+      "layanan_aktif": ""
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function() { pm.response.to.have.status(200); });

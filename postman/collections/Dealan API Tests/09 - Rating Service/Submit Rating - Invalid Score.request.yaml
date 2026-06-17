@@ -1,0 +1,26 @@
+$kind: http-request
+name: Submit Rating - Invalid Score
+method: POST
+url: 'http://localhost:3012/rating/submit'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "order_id": "{{orderId}}",
+      "reviewer_id": "{{userId}}",
+      "reviewer_role": "user",
+      "target_id": "{{driverId}}",
+      "target_role": "driver",
+      "rating_score": 10,
+      "comment": "Out of range score"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 400 or 500", function() { pm.expect([400, 500]).to.include(pm.response.code); });
+      pm.test("Response has error field", function() { var json = pm.response.json(); pm.expect(json).to.have.property("error"); });

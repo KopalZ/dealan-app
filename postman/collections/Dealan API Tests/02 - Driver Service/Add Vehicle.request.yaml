@@ -1,0 +1,25 @@
+$kind: http-request
+name: Add Vehicle
+method: POST
+url: 'http://localhost:3003/drivers/vehicles'
+order: 6000
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: X-Driver-ID
+    value: '{{driverId}}'
+body:
+  type: json
+  content: |-
+    {
+      "jenis": "motor",
+      "merek": "Honda",
+      "model": "Beat",
+      "plat_nomor": "D 1234 ABC",
+      "tahun": 2022
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 201 or 200", function() { pm.expect([200, 201]).to.include(pm.response.code); });

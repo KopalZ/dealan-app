@@ -94,7 +94,6 @@ func main() {
 	r.POST("/auth/login", handler.Login)
 	r.POST("/auth/validate", handler.Validate)
 
-	// Menjalankan server di port 3001 sesuai spesifikasi docker-compose
 	log.Println("Auth Service berjalan pada port :3001")
 	if err := r.Run(":3001"); err != nil {
 		log.Fatalf("Gagal menjalankan server HTTP: %v", err)
