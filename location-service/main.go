@@ -1,10 +1,10 @@
 package main
 
 import (
-	"location-service/controller"
-	"location-service/repository"
-	"location-service/routes"
-	"location-service/service"
+	"github.com/najmialifah/Dealan/location-service/controller"
+	"github.com/najmialifah/Dealan/location-service/repository"
+	"github.com/najmialifah/Dealan/location-service/routes"
+	"github.com/najmialifah/Dealan/location-service/service"
 	"log"
 	"os"
 

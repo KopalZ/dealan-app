@@ -5,6 +5,7 @@ import (
 	"github.com/najmialifah/Dealan/order-service/repository"
 	"github.com/najmialifah/Dealan/order-service/routes"
 	"github.com/najmialifah/Dealan/order-service/service"
+	"github.com/najmialifah/Dealan/order-service/models"
 	"log"
 	"os"
 
@@ -23,10 +24,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("[Order Service] Gagal terhubung ke database: %v", err)
 	}
+	
+	// Auto Migrate
+	err = db.AutoMigrate(&models.Order{})
+	if err != nil {
+		log.Fatalf("[Order Service] Gagal migrasi database: %v", err)
+	}
 
 	// 2. Dependency injection
 	repo := repository.NewOrderRepository(db)
-	svc := service.NewOrderService(repo)
+	svc := service.NewOrderService(repo, nil, "")
 	ctrl := controller.NewOrderController(svc)
 
 	// 3. Setup router
@@ -42,4 +49,4 @@ func main() {
 	if err := router.Run(":" + port); err != nil {
 		log.Fatalf("[Order Service] Gagal menjalankan server: %v", err)
 	}
-}
+}

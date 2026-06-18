@@ -1,7 +1,6 @@
 import axios from 'axios';
-// We use a fallback if process.env.API_BASE_URL is not set by a bundler
-// 10.0.2.2 is the localhost alias for Android Emulators
-const BASE_URL = 'http://10.0.2.2:8000';
+// Menggunakan IP Wi-Fi Laptop agar bisa diakses dari HP fisik, Web, dan Emulator
+const BASE_URL = 'http://20.187.180.177';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
@@ -9,6 +8,9 @@ import { Alert } from 'react-native';
 const api = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,
+  headers: {
+    'Bypass-Tunnel-Reminder': 'true'
+  }
 });
 
 // Interceptor to attach JWT token

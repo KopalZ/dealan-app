@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"order-service/models"
+	"github.com/najmialifah/Dealan/order-service/models"
 	"testing"
 
 	"github.com/gin-gonic/gin"

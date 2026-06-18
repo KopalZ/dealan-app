@@ -3,7 +3,7 @@ param (
     [string]$ResourceGroupName = "dealan-rg",
 
     [Parameter(Mandatory=$false)]
-    [string]$AcrName = "dealanregistry",
+    [string]$AcrName = "dealanregistry2026yazid",
 
     [Parameter(Mandatory=$false)]
     [string]$AksClusterName = "dealan-aks-cluster",
@@ -122,28 +122,21 @@ if (-not $aksExists) {
     Write-Host "AKS Cluster '$AksClusterName' sudah tersedia." -ForegroundColor Yellow
 }
 
-# 5. Login ke Registry ACR
-Write-Host "`n5. Melakukan login ke registry ACR..." -ForegroundColor Green
-az acr login --name $AcrName
+# 5. Login ke Registry ACR (Dilewati karena Docker Desktop lokal mati)
+Write-Host "`n5. Melakukan login ke registry ACR (Dilewati)..." -ForegroundColor Green
 
 # 6. Tagging & Pushing Local Images ke ACR
 Write-Host "`n6. Mengunggah Docker Image ke ACR..." -ForegroundColor Green
 foreach ($service in $services) {
-    $localImage = "dealan-$($service):latest"
-    $remoteImage = "$acrLoginServer/dealan-$($service):latest"
+    $imageName = "dealan-$($service):latest"
+    Write-Host "Membangun image di Cloud (Azure ACR Build): $imageName..." -ForegroundColor Blue
+    $servicePath = Join-Path $PSScriptRoot $service
     
-    # Memeriksa apakah image lokal tersedia
-    $imageCheck = docker images -q $localImage
-    if (-not $imageCheck) {
-        Write-Warning "Docker image lokal '$localImage' tidak ditemukan. Harap pastikan image sudah di-build."
-        continue
+    az acr build --registry $AcrName --image $imageName $servicePath
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Build ACR gagal untuk $service"
+        exit 1
     }
-
-    Write-Host "Tagging $localImage -> $remoteImage..." -ForegroundColor Blue
-    docker tag $localImage $remoteImage
-
-    Write-Host "Pushing $remoteImage ke ACR..." -ForegroundColor Blue
-    docker push $remoteImage
 }
 
 # 7. Menghubungkan kubectl ke AKS

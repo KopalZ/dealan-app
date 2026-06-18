@@ -2,9 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: dealan-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
   - http:
       paths:
@@ -14,102 +13,102 @@ spec:
           service:
             name: auth-service-svc
             port:
-              number: 3001
+              number: 8081
       - path: /users
         pathType: Prefix
         backend:
           service:
             name: user-service-svc
             port:
-              number: 3002
+              number: 8082
       - path: /drivers
         pathType: Prefix
         backend:
           service:
             name: driver-service-svc
             port:
-              number: 3003
+              number: 8083
       - path: /orders
         pathType: Prefix
         backend:
           service:
-            name: order-service-svc
+            name: order-service
             port:
-              number: 3004
+              number: 8089
       - path: /matching
         pathType: Prefix
         backend:
           service:
-            name: matching-service-svc
+            name: matching-service
             port:
-              number: 3005
+              number: 8091
       - path: /pricing
         pathType: Prefix
         backend:
           service:
-            name: pricing-service-svc
+            name: pricing-service
             port:
-              number: 3006
+              number: 80
       - path: /shipments
         pathType: Prefix
         backend:
           service:
-            name: shipment-service-svc
+            name: shipment-service
             port:
-              number: 3007
+              number: 80
       - path: /locations
         pathType: Prefix
         backend:
           service:
-            name: location-service-svc
+            name: location-service
             port:
-              number: 3008
+              number: 8090
       - path: /map-routes
         pathType: Prefix
         backend:
           service:
-            name: map-route-service-svc
+            name: map-route-service
             port:
-              number: 3009
+              number: 8088
       - path: /payments
         pathType: Prefix
         backend:
           service:
-            name: payment-service-svc
+            name: payment-service
             port:
-              number: 3010
+              number: 80
       - path: /notifications
         pathType: Prefix
         backend:
           service:
-            name: notification-service-svc
+            name: notification-service
             port:
-              number: 3011
+              number: 8084
       - path: /ratings
         pathType: Prefix
         backend:
           service:
-            name: rating-review-service-svc
+            name: rating-review-service
             port:
-              number: 3012
+              number: 8085
       - path: /punishments
         pathType: Prefix
         backend:
           service:
-            name: punishment-service-svc
+            name: punishment-service
             port:
-              number: 3013
+              number: 8086
       - path: /promos
         pathType: Prefix
         backend:
           service:
-            name: promo-service-svc
+            name: promo-service
             port:
-              number: 3014
+              number: 8080
       - path: /chats
         pathType: Prefix
         backend:
           service:
-            name: chat-service-svc
+            name: chat-service
             port:
-              number: 3015
+              number: 8087

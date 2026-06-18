@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/najmialifah/Dealan/chat-service/domain"
 	"github.com/najmialifah/Dealan/chat-service/models"
 	"github.com/najmialifah/Dealan/chat-service/repository"
 	"github.com/gorilla/websocket"
@@ -120,6 +121,7 @@ type ChatService interface {
 	GetHistory(ctx context.Context, orderID string) ([]models.ChatMessage, error)
 	CreateRoom(ctx context.Context, orderID, userID, driverID string) error
 	GetClientsInRoom(orderID string) int // untuk unit testing
+	Send(ctx context.Context, req domain.ChatRequest) (*domain.ChatResponse, error)
 }
 
 type chatServiceImpl struct {
@@ -156,6 +158,10 @@ func (h *chatServiceImpl) Broadcast(msg models.WSMessage) {
 
 func (h *chatServiceImpl) SaveMessage(ctx context.Context, msg *models.ChatMessage) error {
 	return h.repo.SaveMessage(ctx, msg)
+}
+
+func (h *chatServiceImpl) Send(ctx context.Context, req domain.ChatRequest) (*domain.ChatResponse, error) {
+	return &domain.ChatResponse{Status: true, MessageID: "mock-id"}, nil
 }
 
 

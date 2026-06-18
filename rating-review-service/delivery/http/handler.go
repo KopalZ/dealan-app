@@ -36,5 +36,5 @@ func (h *RatingHandler) Submit(c *gin.Context) {
 
 // SetupRoutes mendaftarkan rute-rute API untuk rating service
 func SetupRoutes(r *gin.Engine, handler *RatingHandler) {
-	r.POST("/rating/submit", handler.Submit)
+	r.POST("/ratings/submit", handler.Submit)
 }

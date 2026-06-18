@@ -60,14 +60,16 @@ func (s *orderService) CreateOrder(ctx context.Context, order *models.Order) err
 	}
 
 	// Kirim pesan ke Kafka
-	err = s.kafkaProducer.WriteMessages(ctx, kafka.Message{
-		Topic: s.kafkaTopic,
-		Key:   []byte(fmt.Sprintf("%d", order.ID)),
-		Value: eventBytes,
-	})
+	if s.kafkaProducer != nil {
+		err = s.kafkaProducer.WriteMessages(ctx, kafka.Message{
+			Topic: s.kafkaTopic,
+			Key:   []byte(fmt.Sprintf("%d", order.ID)),
+			Value: eventBytes,
+		})
 
-	if err != nil {
-		return fmt.Errorf("gagal publish ke kafka: %w", err)
+		if err != nil {
+			return fmt.Errorf("gagal publish ke kafka: %w", err)
+		}
 	}
 
 	return nil

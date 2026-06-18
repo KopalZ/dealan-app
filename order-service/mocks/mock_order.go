@@ -10,7 +10,7 @@
 package mocks
 
 import (
-	domain "order-service/domain"
+	domain "github.com/najmialifah/Dealan/order-service/domain"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"

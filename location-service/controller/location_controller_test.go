@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"location-service/models"
+	"github.com/najmialifah/Dealan/location-service/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"

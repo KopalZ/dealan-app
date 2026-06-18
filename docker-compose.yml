@@ -79,7 +79,7 @@ services:
 
   # PORT: 3001
   auth-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_auth_service
     working_dir: /app
     volumes:
@@ -100,7 +100,7 @@ services:
 
   # PORT: 3002
   user-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_user_service
     working_dir: /app
     volumes:
@@ -120,7 +120,7 @@ services:
 
   # PORT: 3003
   driver-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_driver_service
     working_dir: /app
     volumes:
@@ -140,7 +140,7 @@ services:
 
   # PORT: 3004
   order-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_order_service
     working_dir: /app
     volumes:
@@ -160,7 +160,7 @@ services:
 
   # PORT: 3005
   matching-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_matching_service
     working_dir: /app
     volumes:
@@ -180,7 +180,7 @@ services:
 
   # PORT: 3006
   pricing-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_pricing_service
     working_dir: /app
     volumes:
@@ -200,7 +200,7 @@ services:
 
   # PORT: 3007
   shipment-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_shipment_service
     working_dir: /app
     volumes:
@@ -220,7 +220,7 @@ services:
 
   # PORT: 3008
   location-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_location_service
     working_dir: /app
     volumes:
@@ -240,7 +240,7 @@ services:
 
   # PORT: 3009
   map-route-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_map_route_service
     working_dir: /app
     volumes:
@@ -260,7 +260,7 @@ services:
 
   # PORT: 3010
   payment-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_payment_service
     working_dir: /app
     volumes:
@@ -280,7 +280,7 @@ services:
 
   # PORT: 3011
   notification-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_notification_service
     working_dir: /app
     volumes:
@@ -300,7 +300,7 @@ services:
 
   # PORT: 3012
   rating-review-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_rating_review_service
     working_dir: /app
     volumes:
@@ -320,7 +320,7 @@ services:
 
   # PORT: 3013
   punishment-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_punishment_service
     working_dir: /app
     volumes:
@@ -340,7 +340,7 @@ services:
 
   # PORT: 3014
   promo-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_promo_service
     working_dir: /app
     volumes:
@@ -360,7 +360,7 @@ services:
 
   # PORT: 3015
   chat-service:
-    image: golang:1.23-alpine
+    image: golang:alpine
     container_name: dealan_chat_service
     working_dir: /app
     volumes:

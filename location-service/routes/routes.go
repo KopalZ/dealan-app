@@ -7,14 +7,11 @@ import (
 )
 
 func SetupRoutes(router *gin.Engine, ctrl *controller.LocationController) {
-	api := router.Group("/api/v1")
+	locationRoutes := router.Group("/locations")
 	{
-		locationRoutes := api.Group("/locations")
-		{
-			// Endpoint driver update lokasi
-			locationRoutes.POST("/update", ctrl.UpdateLocation)
-			// Endpoint user mencari driver terdekat
-			locationRoutes.GET("/nearby", ctrl.FindNearby)
-		}
+		// Endpoint driver update lokasi
+		locationRoutes.POST("/update", ctrl.UpdateLocation)
+		// Endpoint user mencari driver terdekat
+		locationRoutes.GET("/nearby", ctrl.FindNearby)
 	}
 }

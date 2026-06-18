@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/najmialifah/Dealan/matching-service/domain"
 )
 
 type MatchingController struct {

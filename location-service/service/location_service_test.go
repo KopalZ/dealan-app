@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"location-service/models"
+	"github.com/najmialifah/Dealan/location-service/models"
 	"testing"
 	"time"
 

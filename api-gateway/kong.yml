@@ -28,7 +28,7 @@ plugins:
 
 services:
   - name: auth-service
-    url: http://auth-service:3001
+    url: http://host.docker.internal:3001
     routes:
       - name: auth-route
         paths:
@@ -36,7 +36,7 @@ services:
         strip_path: false
 
   - name: user-service
-    url: http://user-service:3002
+    url: http://host.docker.internal:3002
     routes:
       - name: user-route
         paths:
@@ -44,7 +44,7 @@ services:
         strip_path: false
 
   - name: driver-service
-    url: http://driver-service:3003
+    url: http://host.docker.internal:3003
     routes:
       - name: driver-route
         paths:
@@ -52,7 +52,7 @@ services:
         strip_path: false
 
   - name: order-service
-    url: http://order-service:3004
+    url: http://host.docker.internal:3004
     routes:
       - name: order-route
         paths:
@@ -60,7 +60,7 @@ services:
         strip_path: false
 
   - name: matching-service
-    url: http://matching-service:3005
+    url: http://host.docker.internal:3005
     routes:
       - name: matching-route
         paths:
@@ -68,7 +68,7 @@ services:
         strip_path: false
 
   - name: pricing-service
-    url: http://pricing-service:3006
+    url: http://host.docker.internal:3006
     routes:
       - name: pricing-route
         paths:
@@ -76,7 +76,7 @@ services:
         strip_path: false
 
   - name: shipment-service
-    url: http://shipment-service:3007
+    url: http://host.docker.internal:3007
     routes:
       - name: shipment-route
         paths:
@@ -84,7 +84,7 @@ services:
         strip_path: false
 
   - name: location-service
-    url: http://location-service:3008
+    url: http://host.docker.internal:3008
     routes:
       - name: location-route
         paths:
@@ -92,7 +92,7 @@ services:
         strip_path: false
 
   - name: map-route-service
-    url: http://map-route-service:3009
+    url: http://host.docker.internal:3009
     routes:
       - name: map-route-route
         paths:
@@ -100,7 +100,7 @@ services:
         strip_path: false
 
   - name: payment-service
-    url: http://payment-service:3010
+    url: http://host.docker.internal:3010
     routes:
       - name: payment-route
         paths:
@@ -108,7 +108,7 @@ services:
         strip_path: false
 
   - name: notification-service
-    url: http://notification-service:3011
+    url: http://host.docker.internal:3011
     routes:
       - name: notification-route
         paths:
@@ -116,7 +116,7 @@ services:
         strip_path: false
 
   - name: rating-service
-    url: http://rating-review-service:3012
+    url: http://host.docker.internal:3012
     routes:
       - name: rating-route
         paths:
@@ -124,7 +124,7 @@ services:
         strip_path: false
 
   - name: punishment-service
-    url: http://punishment-service:3013
+    url: http://host.docker.internal:3013
     routes:
       - name: punishment-route
         paths:
@@ -132,7 +132,7 @@ services:
         strip_path: false
 
   - name: promo-service
-    url: http://promo-service:3014
+    url: http://host.docker.internal:3014
     routes:
       - name: promo-route
         paths:
@@ -140,7 +140,7 @@ services:
         strip_path: false
 
   - name: chat-service
-    url: http://chat-service:3015
+    url: http://host.docker.internal:3015
     routes:
       - name: chat-route
         paths:

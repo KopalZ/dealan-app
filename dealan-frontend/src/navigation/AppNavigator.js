@@ -42,24 +42,15 @@ export default function AppNavigator() {
   }
 
   return (
-    <Stack.Navigator>
-      {userToken == null ? (
-        // Auth Stack
-        <>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-        </>
-      ) : (
-        // Main Stack
-        <>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="CreateOrder" component={CreateOrderScreen} />
-          <Stack.Screen name="Negotiation" component={NegotiationScreen} />
-          <Stack.Screen name="Matching" component={MatchingScreen} />
-          <Stack.Screen name="Payment" component={PaymentScreen} />
-          <Stack.Screen name="Rating" component={RatingScreen} />
-        </>
-      )}
+    <Stack.Navigator initialRouteName={userToken ? "Home" : "Login"}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="CreateOrder" component={CreateOrderScreen} />
+      <Stack.Screen name="Negotiation" component={NegotiationScreen} />
+      <Stack.Screen name="Matching" component={MatchingScreen} />
+      <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="Rating" component={RatingScreen} />
     </Stack.Navigator>
   );
 }

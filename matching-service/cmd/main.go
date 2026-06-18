@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"os"
 
-	"matching-service/controller"
-	//"matching-service/domain"
-	"matching-service/repository"
-	"matching-service/routes"
-	"matching-service/service"
+	"github.com/najmialifah/Dealan/matching-service/controller"
+	//"github.com/najmialifah/Dealan/matching-service/domain"
+	"github.com/najmialifah/Dealan/matching-service/repository"
+	"github.com/najmialifah/Dealan/matching-service/routes"
+	"github.com/najmialifah/Dealan/matching-service/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/segmentio/kafka-go"

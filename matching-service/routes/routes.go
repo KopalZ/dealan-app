@@ -6,9 +6,8 @@ import (
 )
 
 func SetupRoutes(router *gin.Engine, ctrl *controller.MatchingController) {
-	api := router.Group("/api/v1")
+	matchingRoutes := router.Group("/matching")
 	{
-		// Langsung definisikan rute /match di dalam /api/v1
-		api.POST("/match", ctrl.MatchDriver)
+		matchingRoutes.POST("/match", ctrl.MatchDriver)
 	}
 }
