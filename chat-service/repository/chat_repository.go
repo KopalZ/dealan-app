@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"chat-service/models"
+	"github.com/najmialifah/Dealan/chat-service/models"
 	"gorm.io/gorm"
 )
 

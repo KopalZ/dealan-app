@@ -2,7 +2,7 @@ package repository // WAJIB package repository
 
 import (
 	"context"
-	"matching-service/domain"
+	"github.com/najmialifah/Dealan/matching-service/domain"
 
 	"gorm.io/gorm"
 )

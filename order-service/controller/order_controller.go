@@ -2,8 +2,8 @@ package controller
 
 import (
 	"net/http"
-	"order-service/models"
-	"order-service/service"
+	"github.com/najmialifah/Dealan/order-service/models"
+	"github.com/najmialifah/Dealan/order-service/service"
 
 	"github.com/gin-gonic/gin"
 )

@@ -77,13 +77,12 @@ func (r *postgresDriverRepository) CreateDriver(ctx context.Context, driver *dom
 
 // UpdateDriverLocation memperbarui koordinat GPS lokasi pengemudi secara efisien
 func (r *postgresDriverRepository) UpdateDriverLocation(ctx context.Context, driverID string, lat, long float64) error {
-	return r.db.WithContext(ctx).Model(&domain.DriverStatus{}).
-		Where("driver_id = ?", driverID).
-		Updates(map[string]interface{}{
-			"lat":       lat,
-			"long":      long,
-			"last_seen": time.Now(),
-		}).Error
+	query := `
+		UPDATE driver_status 
+		SET lat = ?, long = ?, lokasi = ST_SetSRID(ST_MakePoint(?, ?), 4326), last_seen = ?
+		WHERE driver_id = ?
+	`
+	return r.db.WithContext(ctx).Exec(query, lat, long, long, lat, time.Now(), driverID).Error
 }
 
 // UpdateDriverStatus memperbarui status online/offline dan jenis layanan aktif

@@ -5,11 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"matching-service/domain" // Sudah diganti ke domain
-	"net/http"
-	"net/http/httptest"
-	"testing"
-
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"chat-service/controller"
+	"github.com/najmialifah/Dealan/chat-service/controller"
 )
 
 // SetupRoutes mendefinisikan pemetaan endpoint HTTP dan WebSocket untuk chat-service.

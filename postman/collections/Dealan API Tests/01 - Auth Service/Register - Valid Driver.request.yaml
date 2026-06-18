@@ -1,0 +1,28 @@
+$kind: http-request
+name: Register - Valid Driver
+method: POST
+url: 'http://localhost:3001/auth/register'
+order: 1500
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "testdriver@example.com",
+      "password": "password123",
+      "role": "driver",
+      "nama": "Test Driver",
+      "nomor_hp": "089876543210"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 201", function() { pm.response.to.have.status(201); });
+      pm.test("Response has token", function() { var json = pm.response.json(); pm.expect(json).to.have.property("token"); });
+      pm.test("Response has account_id", function() { var json = pm.response.json(); pm.expect(json).to.have.property("account_id"); });
+      pm.test("Response has role equal to driver", function() { var json = pm.response.json(); pm.expect(json.role).to.eql("driver"); });
+      pm.environment.set("driverToken", pm.response.json().token);
+      pm.environment.set("driverId", pm.response.json().account_id);

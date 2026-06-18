@@ -20,7 +20,7 @@ func main() {
 	// 1. Baca Konfigurasi Port
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8094" // Port default sesuai spesifikasi kubernetes
+		port = "3007" // Port resmi sesuai kong.yml
 	}
 
 	// 2. Koneksi Database PostgreSQL menggunakan GORM

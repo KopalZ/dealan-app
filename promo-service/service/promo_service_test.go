@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"promo-service/domain"
-	"promo-service/mocks"
-	"promo-service/service"
+	"github.com/najmialifah/Dealan/promo-service/domain"
+	"github.com/najmialifah/Dealan/promo-service/mocks"
+	"github.com/najmialifah/Dealan/promo-service/service"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )

@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"location-service/controller"
-
 	"github.com/gin-gonic/gin"
+
+	"github.com/najmialifah/Dealan/location-service/controller"
 )
 
 func SetupRoutes(router *gin.Engine, ctrl *controller.LocationController) {

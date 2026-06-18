@@ -1,10 +1,45 @@
 package main
 
 import (
-	"fmt"
+	"github.com/najmialifah/Dealan/order-service/controller"
+	"github.com/najmialifah/Dealan/order-service/repository"
+	"github.com/najmialifah/Dealan/order-service/routes"
+	"github.com/najmialifah/Dealan/order-service/service"
+	"log"
+	"os"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
-	fmt.Println("Order Service Dealan berjalan di port :8084")
-	// Nanti konfigurasi server aslinya ditaruh di sini
-}
+	// 1. Initialize DB
+	dbURL := os.Getenv("DB_URL")
+	if dbURL == "" {
+		dbURL = "postgres://postgres:password@localhost:5432/dealan?sslmode=disable"
+	}
+	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("[Order Service] Gagal terhubung ke database: %v", err)
+	}
+
+	// 2. Dependency injection
+	repo := repository.NewOrderRepository(db)
+	svc := service.NewOrderService(repo)
+	ctrl := controller.NewOrderController(svc)
+
+	// 3. Setup router
+	router := gin.Default()
+	routes.SetupRoutes(router, ctrl)
+
+	// 4. Run server
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3004" // Port resmi sesuai kong.yml
+	}
+	log.Printf("[Order Service] Berjalan di port %s", port)
+	if err := router.Run(":" + port); err != nil {
+		log.Fatalf("[Order Service] Gagal menjalankan server: %v", err)
+	}
+}

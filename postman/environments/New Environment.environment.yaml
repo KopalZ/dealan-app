@@ -1,8 +1,17 @@
-﻿name: New Environment
+name: Dealan Local Environment
 values:
+  # ---- Auth Tokens ----
   - key: userToken
     value: ''
     enabled: true
+  - key: driverToken
+    value: ''
+    enabled: true
+  - key: adminToken
+    value: ''
+    enabled: true
+
+  # ---- Resource IDs ----
   - key: userId
     value: ''
     enabled: true
@@ -15,8 +24,26 @@ values:
   - key: transactionId
     value: ''
     enabled: true
+  - key: shipmentId
+    value: ''
+    enabled: true
+  - key: ratingId
+    value: ''
+    enabled: true
+
+  # ---- Service Base URLs (via Kong Gateway: port 8000) ----
+  # Gunakan baseUrl ini untuk request melalui API Gateway (Kong)
+  - key: gatewayBaseUrl
+    value: 'http://localhost:8000'
+    enabled: true
+
+  # ---- Service Base URLs (Direct - sesuai kong.yml) ----
+  # Gunakan baseUrl ini untuk request langsung ke service (tanpa Kong)
   - key: authBaseUrl
     value: 'http://localhost:3001'
+    enabled: true
+  - key: userBaseUrl
+    value: 'http://localhost:3002'
     enabled: true
   - key: driverBaseUrl
     value: 'http://localhost:3003'
@@ -26,6 +53,12 @@ values:
     enabled: true
   - key: matchingBaseUrl
     value: 'http://localhost:3005'
+    enabled: true
+  - key: pricingBaseUrl
+    value: 'http://localhost:3006'
+    enabled: true
+  - key: shipmentBaseUrl
+    value: 'http://localhost:3007'
     enabled: true
   - key: locationBaseUrl
     value: 'http://localhost:3008'
@@ -41,4 +74,13 @@ values:
     enabled: true
   - key: ratingBaseUrl
     value: 'http://localhost:3012'
+    enabled: true
+  - key: punishmentBaseUrl
+    value: 'http://localhost:3013'
+    enabled: true
+  - key: promoBaseUrl
+    value: 'http://localhost:3014'
+    enabled: true
+  - key: chatBaseUrl
+    value: 'http://localhost:3015'
     enabled: true

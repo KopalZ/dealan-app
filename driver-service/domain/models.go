@@ -45,6 +45,11 @@ type DriverStatus struct {
 	Long           float64   `gorm:"type:decimal(11,8)" json:"long"`
 }
 
+// TableName menentukan nama tabel di database agar singular
+func (DriverStatus) TableName() string {
+	return "driver_status"
+}
+
 // DriverRating merepresentasikan agregasi rating driver
 type DriverRating struct {
 	ID          string    `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`

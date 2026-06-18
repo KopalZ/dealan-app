@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"order-service/models"
+	"github.com/najmialifah/Dealan/order-service/models"
 
 	"gorm.io/gorm"
 )

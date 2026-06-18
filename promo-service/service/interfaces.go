@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"promo-service/domain"
+	"github.com/najmialifah/Dealan/promo-service/domain"
 )
 
 type PromoService interface {

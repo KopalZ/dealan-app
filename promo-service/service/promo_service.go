@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"promo-service/domain"
-	"promo-service/repository"
+	"github.com/najmialifah/Dealan/promo-service/domain"
+	"github.com/najmialifah/Dealan/promo-service/repository"
 )
 
 type promoService struct {

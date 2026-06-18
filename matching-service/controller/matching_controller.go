@@ -1,7 +1,6 @@
 package controller // WAJIB package controller
 
 import (
-	"matching-service/domain"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

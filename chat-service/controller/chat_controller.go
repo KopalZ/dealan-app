@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"chat-service/models"
-	"chat-service/service"
+	"github.com/najmialifah/Dealan/chat-service/models"
+	"github.com/najmialifah/Dealan/chat-service/service"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )

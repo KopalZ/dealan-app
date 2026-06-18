@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"chat-service/domain"
-	"chat-service/service"
+	"github.com/najmialifah/Dealan/chat-service/domain"
+	"github.com/najmialifah/Dealan/chat-service/service"
 )
 
 type ChatHandler struct {

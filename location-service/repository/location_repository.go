@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"location-service/models"
 
+	"github.com/najmialifah/Dealan/location-service/models"
 	"gorm.io/gorm"
 )
 
