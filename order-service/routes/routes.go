@@ -9,6 +9,6 @@ func SetupRoutes(router *gin.Engine, orderController *controller.OrderController
 	orderRoutes := router.Group("/orders")
 	{
 		// Endpoint untuk membuat order baru
-		orderRoutes.POST("/", orderController.CreateOrder)
+		orderRoutes.POST("", orderController.CreateOrder)
 	}
 }
