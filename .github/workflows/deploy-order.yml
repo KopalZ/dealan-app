@@ -19,8 +19,8 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: dealanregistry2026yazid.azurecr.io
-        username: dealanregistry2026yazid
-        password: 77ZkDLCa97j6AK9baB2scCDwXw2vAALlP7w2KQM37JPmX2qSroA1JQQJ99CFAC3pKaREqg7NAAACAZCRHPs2
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
 
     - name: Set up Go
       uses: actions/setup-go@v5
