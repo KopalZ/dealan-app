@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"map-route-service/controller"
+	"github.com/najmialifah/Dealan/map-route-service/controller"
 )
 
 // SetupRoutes mendefinisikan routing endpoint untuk map-route-service.

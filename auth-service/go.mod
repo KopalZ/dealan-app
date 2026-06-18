@@ -1,4 +1,4 @@
-module github.com/najmialifah/Dealan/notification-service
+module github.com/najmialifah/Dealan/auth-service
 
 go 1.23.0
 

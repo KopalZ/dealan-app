@@ -3,43 +3,58 @@ package main
 import (
 	"log"
 	"net/http"
-
-	"matching-service/controller"
-	//"matching-service/domain"
-	"matching-service/repository"
-	"matching-service/routes"
-	"matching-service/service"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/najmialifah/Dealan/matching-service/controller"
+	"github.com/najmialifah/Dealan/matching-service/repository"
+	"github.com/najmialifah/Dealan/matching-service/routes"
+	"github.com/najmialifah/Dealan/matching-service/service"
 	"github.com/segmentio/kafka-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func main() {
-	// 1. SETUP DATABASE (PostgreSQL / Supabase)
-	dsn := "host=localhost user=postgres password=postgres dbname=dealan port=5432 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// 1. Baca Konfigurasi dari Environment Variables
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3005" // Port resmi sesuai kong.yml
+	}
+
+	dbURL := os.Getenv("DB_URL")
+	if dbURL == "" {
+		dbURL = "postgres://postgres:password@localhost:5432/dealan?sslmode=disable"
+	}
+
+	kafkaBrokers := os.Getenv("KAFKA_BROKERS")
+	if kafkaBrokers == "" {
+		kafkaBrokers = "localhost:9092"
+	}
+
+	// 2. SETUP DATABASE (PostgreSQL)
+	log.Println("Menghubungkan ke PostgreSQL di:", dbURL)
+	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	if err != nil {
 		log.Println("[Warning] Gagal connect Database:", err)
 	} else {
 		log.Println("[Info] Berhasil connect ke Database PostgreSQL")
 	}
 
-	// 2. SETUP KAFKA PRODUCER
+	// 3. SETUP KAFKA PRODUCER
 	kafkaWriter := &kafka.Writer{
-		Addr:     kafka.TCP("localhost:9092"),
+		Addr:     kafka.TCP(kafkaBrokers),
 		Topic:    "order.matched",
 		Balancer: &kafka.LeastBytes{},
 	}
 	defer kafkaWriter.Close()
 
-	// 3. WIRING (Merakit Clean Architecture)
+	// 4. WIRING (Merakit Clean Architecture)
 	repo := repository.NewMatchingRepository(db)
 	svc := service.NewMatchingService(repo, kafkaWriter, "order.matched")
 	ctrl := controller.NewMatchingController(svc)
 
-	// 4. SETUP ROUTER GIN
+	// 5. SETUP ROUTER GIN
 	router := gin.Default()
 
 	// Endpoint Health Check
@@ -50,12 +65,12 @@ func main() {
 		})
 	})
 
-	// 5. DAFTARKAN ROUTES DARI FOLDER ROUTES
+	// 6. DAFTARKAN ROUTES DARI FOLDER ROUTES
 	routes.SetupRoutes(router, ctrl)
 
-	// 6. JALANKAN SERVER
-	log.Println("Service berjalan aman. Menunggu request di port 3005...")
-	if err := router.Run(":3005"); err != nil {
+	// 7. JALANKAN SERVER
+	log.Printf("Matching Service berjalan di port %s", port)
+	if err := router.Run(":" + port); err != nil {
 		log.Fatal("Gagal menjalankan server: ", err)
 	}
 }

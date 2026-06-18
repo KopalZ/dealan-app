@@ -4,12 +4,11 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/binary"
-	"fmt"
 	"log"
 	"math/rand"
 
-	"map-route-service/models"
-	"map-route-service/repository"
+	"github.com/najmialifah/Dealan/map-route-service/models"
+	"github.com/najmialifah/Dealan/map-route-service/repository"
 )
 
 // MapService menyediakan kontrak fungsional untuk map-route-service.

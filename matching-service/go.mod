@@ -1,4 +1,4 @@
-module matching-service
+module github.com/najmialifah/Dealan/matching-service
 
 go 1.25.0
 

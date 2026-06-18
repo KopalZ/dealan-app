@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"matching-service/controller"
 	"github.com/gin-gonic/gin"
+	"github.com/najmialifah/Dealan/matching-service/controller"
 )
 
 func SetupRoutes(router *gin.Engine, ctrl *controller.MatchingController) {

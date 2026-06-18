@@ -44,6 +44,11 @@ func main() {
 		log.Fatalf("Gagal melakukan migrasi database: %v", err)
 	}
 
+	// Pastikan ekstensi PostGIS aktif dan buat kolom lokasi spasial untuk matching-service
+	db.Exec("CREATE EXTENSION IF NOT EXISTS postgis;")
+	db.Exec("ALTER TABLE driver_status ADD COLUMN IF NOT EXISTS lokasi GEOMETRY(Point, 4326);")
+	db.Exec("CREATE INDEX IF NOT EXISTS driver_status_lokasi_gix ON driver_status USING Gist(lokasi);")
+
 	// 3. Inisialisasi Repository dan Service
 	repo := repository.NewPostgresDriverRepository(db)
 	driverSvc := service.NewDriverService(repo)

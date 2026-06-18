@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"map-route-service/models"
+	"github.com/najmialifah/Dealan/map-route-service/models"
 	"gorm.io/gorm"
 )
 

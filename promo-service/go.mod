@@ -1,4 +1,4 @@
-module promo-service
+module github.com/najmialifah/Dealan/promo-service
 
 go 1.26.2
 

@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"matching-service/domain" // Sudah diganti ke domain
+	"github.com/najmialifah/Dealan/matching-service/domain" // Sudah diganti ke domain
 	"testing"
 	"time"
 

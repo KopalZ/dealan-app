@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"map-route-service/models"
-	"map-route-service/service"
+	"github.com/najmialifah/Dealan/map-route-service/models"
+	"github.com/najmialifah/Dealan/map-route-service/service"
 )
 
 // MapController mengurus request HTTP yang berkaitan dengan pemetaan dan rute.

@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"chat-service/models"
+	"github.com/najmialifah/Dealan/chat-service/models"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"promo-service/domain"
-	"promo-service/service"
+	"github.com/najmialifah/Dealan/promo-service/domain"
+	"github.com/najmialifah/Dealan/promo-service/service"
 )
 
 type PromoHandler struct {

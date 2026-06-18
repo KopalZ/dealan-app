@@ -1,0 +1,19 @@
+go 1.26.2
+
+use (
+    ./auth-service
+    ./chat-service
+    ./driver-service
+    ./location-service
+    ./map-route-service
+    ./matching-service
+    ./notification-service
+    ./order-service
+    ./payment-service
+    ./pricing-service
+    ./promo-service
+    ./punishment-service
+    ./rating-review-service
+    ./shipment-service
+    ./user-service
+)

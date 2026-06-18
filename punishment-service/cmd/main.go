@@ -41,7 +41,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8086"
+		port = "3013" // Port resmi sesuai kong.yml
 	}
 
 	srv := &http.Server{

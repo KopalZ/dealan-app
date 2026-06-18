@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	deliveryHttp "promo-service/delivery/http"
-	"promo-service/repository"
-	"promo-service/service"
+	deliveryHttp "github.com/najmialifah/Dealan/promo-service/delivery/http"
+	"github.com/najmialifah/Dealan/promo-service/repository"
+	"github.com/najmialifah/Dealan/promo-service/service"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -41,7 +41,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8087" // default port
+		port = "3014" // Port resmi sesuai kong.yml
 	}
 
 	srv := &http.Server{

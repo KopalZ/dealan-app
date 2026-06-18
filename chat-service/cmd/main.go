@@ -5,11 +5,11 @@ import (
 	"os"
 	"time"
 
-	"chat-service/controller"
-	"chat-service/models"
-	"chat-service/repository"
-	"chat-service/routes"
-	"chat-service/service"
+	"github.com/najmialifah/Dealan/chat-service/controller"
+	"github.com/najmialifah/Dealan/chat-service/models"
+	"github.com/najmialifah/Dealan/chat-service/repository"
+	"github.com/najmialifah/Dealan/chat-service/routes"
+	"github.com/najmialifah/Dealan/chat-service/service"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -21,7 +21,7 @@ func main() {
 	// 1. Ambil Port dari Environment Variables atau gunakan default
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8087" // Menggunakan port 8087 sesuai dengan spesifikasi lama
+		port = "3015" // Port resmi sesuai kong.yml
 	}
 
 	// 2. Ambil Koneksi Database PostgreSQL URL

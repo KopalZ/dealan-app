@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"chat-service/domain"
+	"github.com/najmialifah/Dealan/chat-service/domain"
 )
 
 type ChatService interface {

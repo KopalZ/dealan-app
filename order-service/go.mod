@@ -1,4 +1,4 @@
-module order-service
+module github.com/najmialifah/Dealan/order-service
 
 go 1.23.0
 

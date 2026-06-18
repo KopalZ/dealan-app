@@ -1,4 +1,4 @@
-module chat-service
+module github.com/najmialifah/Dealan/chat-service
 
 go 1.26.2
 

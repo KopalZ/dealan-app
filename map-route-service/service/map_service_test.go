@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"map-route-service/models"
+	"github.com/najmialifah/Dealan/map-route-service/models"
 )
 
 // mockMapRepository adalah stub database untuk unit test map-route-service.

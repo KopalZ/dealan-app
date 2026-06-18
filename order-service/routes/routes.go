@@ -1,8 +1,7 @@
 package routes
 
 import (
-	"order-service/controller"
-
+	"github.com/najmialifah/Dealan/order-service/controller"
 	"github.com/gin-gonic/gin"
 )
 

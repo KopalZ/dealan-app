@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"matching-service/domain"
 
+	"github.com/najmialifah/Dealan/matching-service/domain"
 	"github.com/segmentio/kafka-go"
 	"gorm.io/gorm"
 )

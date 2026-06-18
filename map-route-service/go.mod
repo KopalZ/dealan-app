@@ -1,4 +1,4 @@
-module map-route-service
+module github.com/najmialifah/Dealan/map-route-service
 
 go 1.26.2
 

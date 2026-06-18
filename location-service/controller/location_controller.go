@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"location-service/service"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/najmialifah/Dealan/location-service/service"
 )
 
 type LocationController struct {

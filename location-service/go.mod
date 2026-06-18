@@ -1,4 +1,4 @@
-module location-service
+module github.com/najmialifah/Dealan/location-service
 
 go 1.25.0
 

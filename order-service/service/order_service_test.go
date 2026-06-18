@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"order-service/models"
 	"testing"
 
 	"github.com/segmentio/kafka-go"

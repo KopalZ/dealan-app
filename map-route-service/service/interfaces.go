@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"map-route-service/domain"
+	"github.com/najmialifah/Dealan/map-route-service/domain"
 )
 
 type MapService interface {

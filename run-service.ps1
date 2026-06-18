@@ -6,24 +6,25 @@ param (
     [string]$ServicePort
 )
 
-# Set default ports based on the service if no port is provided
+# Set default ports sesuai kong.yml (sumber kebenaran tunggal)
 if (-not $ServicePort) {
     switch ($ServiceName) {
-        "auth-service" { $ServicePort = "3001" }
-        "user-service" { $ServicePort = "3002" }
-        "driver-service" { $ServicePort = "3003" }
-        "order-service" { $ServicePort = "3004" }
-        "matching-service" { $ServicePort = "3005" }
-        "pricing-service" { $ServicePort = "3006" }
-        "chat-service" { $ServicePort = "8087" }
-        "map-route-service" { $ServicePort = "8088" }
-        "notification-service" { $ServicePort = "8084" }
-        "payment-service" { $ServicePort = "8093" }
-        "promo-service" { $ServicePort = "3012" }
-        "punishment-service" { $ServicePort = "8086" }
-        "rating-review-service" { $ServicePort = "8085" }
-        "shipment-service" { $ServicePort = "8094" }
-        default { $ServicePort = "8080" }
+        "auth-service"          { $ServicePort = "3001" }
+        "user-service"          { $ServicePort = "3002" }
+        "driver-service"        { $ServicePort = "3003" }
+        "order-service"         { $ServicePort = "3004" }
+        "matching-service"      { $ServicePort = "3005" }
+        "pricing-service"       { $ServicePort = "3006" }
+        "shipment-service"      { $ServicePort = "3007" }
+        "location-service"      { $ServicePort = "3008" }
+        "map-route-service"     { $ServicePort = "3009" }
+        "payment-service"       { $ServicePort = "3010" }
+        "notification-service"  { $ServicePort = "3011" }
+        "rating-review-service" { $ServicePort = "3012" }
+        "punishment-service"    { $ServicePort = "3013" }
+        "promo-service"         { $ServicePort = "3014" }
+        "chat-service"          { $ServicePort = "3015" }
+        default                 { $ServicePort = "8080" }
     }
 }
 

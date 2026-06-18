@@ -8,11 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"map-route-service/controller"
-	"map-route-service/models"
-	"map-route-service/repository"
-	"map-route-service/routes"
-	"map-route-service/service"
+	"github.com/najmialifah/Dealan/map-route-service/controller"
+	"github.com/najmialifah/Dealan/map-route-service/models"
+	"github.com/najmialifah/Dealan/map-route-service/repository"
+	"github.com/najmialifah/Dealan/map-route-service/routes"
+	"github.com/najmialifah/Dealan/map-route-service/service"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 	// 1. Konfigurasi Port
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8088" // Menggunakan port 8088 sesuai dengan kode lama
+		port = "3009" // Port resmi sesuai kong.yml
 	}
 
 	// 2. Hubungkan ke PostgreSQL Database

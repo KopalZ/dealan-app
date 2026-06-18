@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"order-service/models"
-	"order-service/repository"
+	"github.com/najmialifah/Dealan/order-service/models"
+	"github.com/najmialifah/Dealan/order-service/repository"
 
 	"github.com/segmentio/kafka-go"
 )

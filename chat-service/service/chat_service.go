@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"chat-service/models"
-	"chat-service/repository"
+	"github.com/najmialifah/Dealan/chat-service/models"
+	"github.com/najmialifah/Dealan/chat-service/repository"
 	"github.com/gorilla/websocket"
 )
 

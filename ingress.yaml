@@ -14,18 +14,102 @@ spec:
           service:
             name: auth-service-svc
             port:
-              number: 8081
-      - path: /user
+              number: 3001
+      - path: /users
         pathType: Prefix
         backend:
           service:
             name: user-service-svc
             port:
-              number: 8082
-      - path: /driver
+              number: 3002
+      - path: /drivers
         pathType: Prefix
         backend:
           service:
             name: driver-service-svc
             port:
-              number: 8083
+              number: 3003
+      - path: /orders
+        pathType: Prefix
+        backend:
+          service:
+            name: order-service-svc
+            port:
+              number: 3004
+      - path: /matching
+        pathType: Prefix
+        backend:
+          service:
+            name: matching-service-svc
+            port:
+              number: 3005
+      - path: /pricing
+        pathType: Prefix
+        backend:
+          service:
+            name: pricing-service-svc
+            port:
+              number: 3006
+      - path: /shipments
+        pathType: Prefix
+        backend:
+          service:
+            name: shipment-service-svc
+            port:
+              number: 3007
+      - path: /locations
+        pathType: Prefix
+        backend:
+          service:
+            name: location-service-svc
+            port:
+              number: 3008
+      - path: /map-routes
+        pathType: Prefix
+        backend:
+          service:
+            name: map-route-service-svc
+            port:
+              number: 3009
+      - path: /payments
+        pathType: Prefix
+        backend:
+          service:
+            name: payment-service-svc
+            port:
+              number: 3010
+      - path: /notifications
+        pathType: Prefix
+        backend:
+          service:
+            name: notification-service-svc
+            port:
+              number: 3011
+      - path: /ratings
+        pathType: Prefix
+        backend:
+          service:
+            name: rating-review-service-svc
+            port:
+              number: 3012
+      - path: /punishments
+        pathType: Prefix
+        backend:
+          service:
+            name: punishment-service-svc
+            port:
+              number: 3013
+      - path: /promos
+        pathType: Prefix
+        backend:
+          service:
+            name: promo-service-svc
+            port:
+              number: 3014
+      - path: /chats
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-service-svc
+            port:
+              number: 3015

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"map-route-service/domain"
-	"map-route-service/service"
+	"github.com/najmialifah/Dealan/map-route-service/domain"
+	"github.com/najmialifah/Dealan/map-route-service/service"
 )
 
 type MapHandler struct {
