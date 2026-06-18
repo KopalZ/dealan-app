@@ -1,6 +1,6 @@
 import axios from 'axios';
-// Menggunakan IP Wi-Fi Laptop agar bisa diakses dari HP fisik, Web, dan Emulator
-const BASE_URL = 'http://20.187.180.177';
+// Menggunakan Vercel Proxy untuk mengatasi masalah CORS tanpa perlu Docker!
+const BASE_URL = '/api';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
