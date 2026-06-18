@@ -12,9 +12,9 @@ export default function MatchingScreen({ route, navigation }) {
     const matchDriver = async () => {
       try {
         const payload = {
-          order_id: String(order_id),
+          order_id: parseInt(order_id, 10),
           lat: -6.2088,
-          lon: 106.8456,
+          lng: 106.8456,
           radius: 5000,
           service_type: 'ride'
         };
