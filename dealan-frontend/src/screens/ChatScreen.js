@@ -57,7 +57,13 @@ export default function ChatScreen({ route }) {
 
     function startLocalFallback() {
       fallbackInterval = setInterval(async () => {
-        const localChat = await AsyncStorage.getItem(`chat_${order_id}`);
+        let localChat = null;
+        if (typeof window !== 'undefined' && window.localStorage) {
+          localChat = window.localStorage.getItem(`chat_${order_id}`);
+        } else {
+          localChat = await AsyncStorage.getItem(`chat_${order_id}`);
+        }
+        
         if (localChat) {
           setMessages(JSON.parse(localChat));
         }
@@ -83,10 +89,23 @@ export default function ChatScreen({ route }) {
       ws.current.send(JSON.stringify(messagePayload));
       setMessages((prev) => [...prev, messagePayload]);
     } else {
-      // Local sync fallback
-      const newMsgs = [...messages, messagePayload];
+      // Local sync fallback: prevent overwriting other tab's messages
+      let localChat = null;
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localChat = window.localStorage.getItem(`chat_${order_id}`);
+      } else {
+        localChat = await AsyncStorage.getItem(`chat_${order_id}`);
+      }
+      
+      const currentMsgs = localChat ? JSON.parse(localChat) : messages;
+      const newMsgs = [...currentMsgs, messagePayload];
       setMessages(newMsgs);
-      await AsyncStorage.setItem(`chat_${order_id}`, JSON.stringify(newMsgs));
+      
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem(`chat_${order_id}`, JSON.stringify(newMsgs));
+      } else {
+        await AsyncStorage.setItem(`chat_${order_id}`, JSON.stringify(newMsgs));
+      }
     }
     setInputText('');
   };

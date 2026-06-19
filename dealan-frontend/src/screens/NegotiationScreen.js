@@ -49,7 +49,7 @@ export default function NegotiationScreen({ route, navigation }) {
       const res = await negotiatePrice(payload);
       if (res.status === 'approved' || res.status === 'accepted') {
         alert('Tawaran Diterima!');
-        navigation.navigate('Matching', { order_id });
+        navigation.navigate('Matching', { order_id, nominal: payload.requested_price });
       } else {
         Alert.alert('Ditolak', 'Harga tawaran terlalu rendah, coba naikkan sedikit.');
       }

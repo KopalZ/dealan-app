@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { findDriver } from '../services/matchingApi';
 
 export default function MatchingScreen({ route, navigation }) {
-  const { order_id } = route.params || {};
+  const { order_id, nominal } = route.params || {};
   const [status, setStatus] = useState('Mencari driver terbaik di sekitarmu...');
   const [isFailed, setIsFailed] = useState(false);
   const [driverId, setDriverId] = useState(null);
@@ -68,7 +68,7 @@ export default function MatchingScreen({ route, navigation }) {
             
             <TouchableOpacity 
               style={[styles.primaryButton, { backgroundColor: '#10B981', marginTop: 15 }]} 
-              onPress={() => navigation.navigate('Payment', { order_id, driver_id: driverId, nominal: 20000 })}
+              onPress={() => navigation.navigate('Payment', { order_id, driver_id: driverId, nominal: nominal || 20000 })}
             >
               <Text style={styles.primaryButtonText}>Selesaikan Pesanan & Bayar</Text>
             </TouchableOpacity>
@@ -78,7 +78,7 @@ export default function MatchingScreen({ route, navigation }) {
         {isFailed && (
           <TouchableOpacity 
             style={styles.primaryButton} 
-            onPress={() => navigation.navigate('Payment', { order_id, driver_id: '22222222-2222-2222-2222-222222222222', nominal: 20000 })}
+            onPress={() => navigation.navigate('Payment', { order_id, driver_id: '22222222-2222-2222-2222-222222222222', nominal: nominal || 20000 })}
           >
             <Text style={styles.primaryButtonText}>Lanjutkan ke Pembayaran (Demo)</Text>
           </TouchableOpacity>
