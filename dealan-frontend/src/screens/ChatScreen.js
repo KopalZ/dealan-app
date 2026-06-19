@@ -15,7 +15,13 @@ export default function ChatScreen({ route }) {
     const loadHistory = async () => {
       try {
         const history = await getChatHistory(order_id);
-        if (history) setMessages(history);
+        if (Array.isArray(history)) {
+          setMessages(history);
+        } else if (history && Array.isArray(history.messages)) {
+          setMessages(history.messages);
+        } else {
+          setMessages([]);
+        }
       } catch (err) {
         console.log('Error loading history', err);
       }

@@ -18,6 +18,8 @@ export default function DriverDashboardScreen({ navigation }) {
           price: 'Sesuai Negosiasi',
           status: 'Menunggu Konfirmasi'
         }]);
+      } else {
+        setPendingOrders([]);
       }
     };
     fetchOrders();
@@ -27,7 +29,8 @@ export default function DriverDashboardScreen({ navigation }) {
 
   const handleAccept = async (orderId) => {
     Alert.alert('Pesanan Diterima', 'Anda berhasil menerima pesanan ini!');
-    await AsyncStorage.setItem('driverAcceptedOrder', orderId);
+    await AsyncStorage.setItem('driverAcceptedOrder', String(orderId));
+    await AsyncStorage.removeItem('latestOrderId'); // Hapus dari antrian masuk
     
     // Simulate notifying the user
     navigation.navigate('Chat', { order_id: orderId, role: 'driver', user_id: 'driver-123' });
