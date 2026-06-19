@@ -7,8 +7,7 @@ export const getChatHistory = async (orderId) => {
 
 // WebSocket URL builder
 export const getChatWebSocketUrl = (orderId, userId, role) => {
-  // Use wss for secure websocket if in production
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const host = window.location.host; // Vercel proxy will forward to /api/chat/ws
-  return `${protocol}//${host}/api/chat/ws?order_id=${orderId}&user_id=${userId}&role=${role}`;
+  // Vercel Serverless does NOT support WebSockets.
+  // We must connect directly to the Azure Ingress IP.
+  return `ws://20.187.180.177/chat/ws?order_id=${orderId}&user_id=${userId}&role=${role}`;
 };

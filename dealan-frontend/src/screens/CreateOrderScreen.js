@@ -26,6 +26,22 @@ export default function CreateOrderScreen({ navigation }) {
     setDestinations(newDest);
   };
 
+  const getHaversineDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; 
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
+  const geocode = async (query) => {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    if (data && data.length > 0) return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+    return null;
+  };
+
   const handleCheckEstimate = async () => {
     if (!origin || !destinations[0]) {
       alert('Harap isi titik jemput dan minimal 1 tujuan');
@@ -38,9 +54,21 @@ export default function CreateOrderScreen({ navigation }) {
       try {
         mapRes = await getRoute(origin, destinations[destinations.length - 1]);
       } catch (mapErr) {
-        // Jika API map-route-service gagal (lokasi tidak spesifik / backend down), gunakan Mock Data
-        // agar user tetap bisa lanjut ke tahap pembayaran
-        mapRes = { distance: 12.5, duration: 1500 }; // 12.5 km, 25 menit
+        // Fallback: Use direct OSM Nominatim and Haversine Distance
+        try {
+          const coord1 = await geocode(origin);
+          const coord2 = await geocode(destinations[destinations.length - 1]);
+          if (coord1 && coord2) {
+             const dist = getHaversineDistance(coord1.lat, coord1.lon, coord2.lat, coord2.lon);
+             // Multiply by 1.3 to roughly estimate road distance vs straight line
+             const roadDist = Math.max(1, Math.round((dist * 1.3) * 10) / 10);
+             mapRes = { distance: roadDist, duration: (roadDist / 30) * 3600 };
+          } else {
+             throw new Error('Fallback failed');
+          }
+        } catch(e) {
+          mapRes = { distance: 12.5, duration: 1500 }; 
+        }
       }
 
       // If multi-stop, we mock additional distance
