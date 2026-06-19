@@ -1,12 +1,58 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createOrder } from '../services/orderApi';
-
+import { getRoute } from '../services/mapApi';
+import { calculateEstimate } from '../services/pricingApi';
+import { createShipment } from '../services/shipmentApi';
 export default function CreateOrderScreen({ navigation }) {
   const [serviceType, setServiceType] = useState('ride'); // ride, car, send
   const [userId, setUserId] = useState('1'); // Placeholder for User ID
   const [detailPaket, setDetailPaket] = useState('');
+  const [origin, setOrigin] = useState('');
+  const [destinations, setDestinations] = useState(['']); // Array for multiple destinations
+  const [routeInfo, setRouteInfo] = useState(null);
+  const [estimatedPrice, setEstimatedPrice] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [estimating, setEstimating] = useState(false);
+
+  const handleAddDestination = () => {
+    setDestinations([...destinations, '']);
+  };
+
+  const handleDestinationChange = (text, index) => {
+    const newDest = [...destinations];
+    newDest[index] = text;
+    setDestinations(newDest);
+  };
+
+  const handleCheckEstimate = async () => {
+    if (!origin || !destinations[0]) {
+      alert('Harap isi titik jemput dan minimal 1 tujuan');
+      return;
+    }
+    try {
+      setEstimating(true);
+      // For demo, just use the first destination for routing map calculation
+      const mapRes = await getRoute(origin, destinations[destinations.length - 1]);
+      // If multi-stop, we mock additional distance
+      const totalDistance = mapRes.distance + (destinations.length - 1) * 3; 
+
+      setRouteInfo({ ...mapRes, distance: totalDistance });
+
+      // 2. Calculate Pricing based on total distance
+      const priceRes = await calculateEstimate({
+        service_type: serviceType,
+        distance: totalDistance,
+        weight: serviceType === 'send' ? 2.5 : 0 // dummy weight
+      });
+      setEstimatedPrice(priceRes.estimated_price);
+    } catch (err) {
+      // Global error handling takes care of it
+    } finally {
+      setEstimating(false);
+    }
+  };
 
   const handleCreateOrder = async () => {
     try {
@@ -21,8 +67,33 @@ export default function CreateOrderScreen({ navigation }) {
       };
 
       const res = await createOrder(payload);
+      const orderId = res.data.id;
+
+      if (serviceType === 'send') {
+        // Create Shipment for multi-stop
+        await createShipment({
+          order_id: String(orderId),
+          kategori_barang: 'Umum',
+          berat_barang: 2.5,
+          nama_penerima: 'Penerima',
+          nomor_penerima: '08123456789',
+          catatan_pickup: detailPaket,
+          manifest: {
+            is_multi_stop: destinations.length > 1,
+            destinations: destinations
+          }
+        });
+      }
+
+      await AsyncStorage.setItem('latestOrderId', String(orderId));
+
       alert('Pesanan berhasil dibuat');
-      navigation.navigate('Negotiation', { order_id: res.data.id });
+      // Pass the estimated price and coords to NegotiationScreen
+      navigation.navigate('Negotiation', { 
+        order_id: orderId,
+        estimatedPrice,
+        distance: routeInfo?.distance
+      });
     } catch (err) {
       // Handled globally
     } finally {
@@ -64,11 +135,62 @@ export default function CreateOrderScreen({ navigation }) {
         </View>
       )}
 
-      {loading ? (
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Titik Jemput</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Misal: Stasiun Bandung"
+          placeholderTextColor="#999"
+          value={origin}
+          onChangeText={setOrigin}
+        />
+      </View>
+
+      {destinations.map((dest, index) => (
+        <View key={index} style={styles.inputContainer}>
+          <Text style={styles.label}>Titik Tujuan {destinations.length > 1 ? index + 1 : ''}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Misal: Alun-alun Bandung"
+            placeholderTextColor="#999"
+            value={dest}
+            onChangeText={(text) => handleDestinationChange(text, index)}
+          />
+        </View>
+      ))}
+
+      {serviceType === 'send' && (
+        <TouchableOpacity style={styles.addStopButton} onPress={handleAddDestination}>
+          <Text style={styles.addStopText}>+ Tambah Tujuan Lain</Text>
+        </TouchableOpacity>
+      )}
+
+      {routeInfo && (
+        <View style={styles.mapMock}>
+          <Text style={styles.mapIcon}>🗺️</Text>
+          <View>
+            <Text style={styles.mapText}>Rute Optimal Ditemukan!</Text>
+            <Text style={styles.mapDetail}>Jarak: {routeInfo.distance} km • Waktu: {Math.round(routeInfo.duration/60)} menit</Text>
+          </View>
+        </View>
+      )}
+
+      {estimatedPrice && (
+        <View style={styles.priceContainer}>
+          <Text style={styles.priceLabel}>Estimasi Harga Dasar:</Text>
+          <Text style={styles.priceValue}>Rp {estimatedPrice.toLocaleString('id-ID')}</Text>
+        </View>
+      )}
+
+      {loading || estimating ? (
         <ActivityIndicator size="large" color="#007AFF" style={{ marginTop: 20 }} />
+      ) : !estimatedPrice ? (
+        <TouchableOpacity style={styles.secondaryButton} onPress={handleCheckEstimate}>
+          <Text style={styles.secondaryButtonText}>Cek Estimasi Harga</Text>
+        </TouchableOpacity>
       ) : (
         <TouchableOpacity style={styles.primaryButton} onPress={handleCreateOrder}>
-          <Text style={styles.primaryButtonText}>Lanjutkan Pesanan</Text>
+          <Text style={styles.primaryButtonText}>Buat Pesanan & Lanjut Tawar</Text>
         </TouchableOpacity>
       )}
     </ScrollView>
@@ -90,5 +212,16 @@ const styles = StyleSheet.create({
   label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 8, marginLeft: 5 },
   input: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#E2E8F0', padding: 15, borderRadius: 12, fontSize: 16, color: '#333' },
   primaryButton: { backgroundColor: '#007AFF', paddingVertical: 16, borderRadius: 12, alignItems: 'center', marginTop: 10, shadowColor: '#007AFF', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.3, shadowRadius: 15, elevation: 5 },
-  primaryButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' }
+  primaryButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  secondaryButton: { backgroundColor: '#FFF', paddingVertical: 16, borderRadius: 12, alignItems: 'center', marginTop: 10, borderWidth: 2, borderColor: '#007AFF' },
+  secondaryButtonText: { color: '#007AFF', fontSize: 18, fontWeight: 'bold' },
+  addStopButton: { marginBottom: 20, alignSelf: 'flex-start', padding: 10, backgroundColor: '#E0E7FF', borderRadius: 8 },
+  addStopText: { color: '#4F46E5', fontWeight: 'bold' },
+  mapMock: { backgroundColor: '#E0F2FE', padding: 15, borderRadius: 12, flexDirection: 'row', alignItems: 'center', marginBottom: 20, borderWidth: 1, borderColor: '#BAE6FD' },
+  mapIcon: { fontSize: 32, marginRight: 15 },
+  mapText: { fontSize: 16, fontWeight: 'bold', color: '#0369A1' },
+  mapDetail: { fontSize: 14, color: '#0284C7', marginTop: 4 },
+  priceContainer: { backgroundColor: '#F0FDF4', padding: 15, borderRadius: 12, alignItems: 'center', marginBottom: 20, borderWidth: 1, borderColor: '#BBF7D0' },
+  priceLabel: { fontSize: 14, color: '#166534', fontWeight: 'bold' },
+  priceValue: { fontSize: 24, fontWeight: '900', color: '#15803D', marginTop: 5 }
 });

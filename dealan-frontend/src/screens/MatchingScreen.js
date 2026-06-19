@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { findDriver } from '../services/matchingApi';
 
 export default function MatchingScreen({ route, navigation }) {
@@ -7,8 +8,10 @@ export default function MatchingScreen({ route, navigation }) {
   const [status, setStatus] = useState('Mencari driver terbaik di sekitarmu...');
   const [isFailed, setIsFailed] = useState(false);
   const [driverId, setDriverId] = useState(null);
+  const [driverAccepted, setDriverAccepted] = useState(false);
 
   useEffect(() => {
+    let checkInterval;
     const matchDriver = async () => {
       try {
         const payload = {
@@ -19,11 +22,17 @@ export default function MatchingScreen({ route, navigation }) {
           service_type: 'ride'
         };
         const res = await findDriver(payload);
-        setStatus(`Yeay! Driver Ditemukan`);
+        setStatus(`Yeay! Driver Ditemukan. Menunggu driver menerima...`);
         setDriverId(res.driver_id || '22222222-2222-2222-2222-222222222222');
         
-        setTimeout(() => {
-          navigation.navigate('Payment', { order_id, driver_id: res.driver_id || '22222222-2222-2222-2222-222222222222', nominal: 20000 });
+        // Poll AsyncStorage to see if driver accepted (from DriverDashboard)
+        checkInterval = setInterval(async () => {
+          const acceptedOrder = await AsyncStorage.getItem('driverAcceptedOrder');
+          if (acceptedOrder === String(order_id)) {
+            setDriverAccepted(true);
+            setStatus('Driver telah menerima pesananmu!');
+            clearInterval(checkInterval);
+          }
         }, 2000);
       } catch (err) {
         setStatus('Oops, gagal mencari driver. Coba lagi nanti.');
@@ -32,6 +41,7 @@ export default function MatchingScreen({ route, navigation }) {
     };
 
     matchDriver();
+    return () => clearInterval(checkInterval);
   }, []);
 
   return (
@@ -43,8 +53,26 @@ export default function MatchingScreen({ route, navigation }) {
         <Text style={styles.title}>{isFailed ? 'Pencarian Gagal' : 'Mencari Driver'}</Text>
         <Text style={styles.status}>{status}</Text>
         
-        {!isFailed && !driverId && (
+        {!isFailed && !driverAccepted && (
           <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
+        )}
+
+        {driverAccepted && (
+          <>
+            <TouchableOpacity 
+              style={styles.primaryButton} 
+              onPress={() => navigation.navigate('Chat', { order_id, role: 'user', user_id: 'user-123' })}
+            >
+              <Text style={styles.primaryButtonText}>💬 Chat dengan Driver</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[styles.primaryButton, { backgroundColor: '#10B981', marginTop: 15 }]} 
+              onPress={() => navigation.navigate('Payment', { order_id, driver_id: driverId, nominal: 20000 })}
+            >
+              <Text style={styles.primaryButtonText}>Selesaikan Pesanan & Bayar</Text>
+            </TouchableOpacity>
+          </>
         )}
         
         {isFailed && (

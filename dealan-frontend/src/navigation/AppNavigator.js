@@ -12,6 +12,9 @@ import NegotiationScreen from '../screens/NegotiationScreen';
 import MatchingScreen from '../screens/MatchingScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import RatingScreen from '../screens/RatingScreen';
+import DriverDashboardScreen from '../screens/DriverDashboardScreen';
+import ChatScreen from '../screens/ChatScreen';
+import HistoryScreen from '../screens/HistoryScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +54,9 @@ export default function AppNavigator() {
       <Stack.Screen name="Matching" component={MatchingScreen} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="Rating" component={RatingScreen} />
+      <Stack.Screen name="DriverDashboard" component={DriverDashboardScreen} options={{ title: 'Driver Mode' }} />
+      <Stack.Screen name="Chat" component={ChatScreen} options={{ title: 'Chat' }} />
+      <Stack.Screen name="History" component={HistoryScreen} options={{ title: 'Riwayat Transaksi' }} />
     </Stack.Navigator>
   );
 }

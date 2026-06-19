@@ -61,6 +61,9 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Register')}>
           <Text style={styles.secondaryButtonText}>Belum punya akun? Daftar</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={[styles.secondaryButton, { marginTop: 15 }]} onPress={() => navigation.navigate('DriverDashboard')}>
+          <Text style={styles.driverButtonText}>🚗 Login sebagai Mitra Driver</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -76,5 +79,6 @@ const styles = StyleSheet.create({
   primaryButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   secondaryButton: { paddingVertical: 15, alignItems: 'center', marginTop: 5 },
   secondaryButtonText: { color: '#007AFF', fontSize: 16, fontWeight: '600' },
+  driverButtonText: { color: '#10B981', fontSize: 16, fontWeight: 'bold' },
   loader: { marginVertical: 20 }
 });

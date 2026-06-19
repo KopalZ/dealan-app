@@ -1,12 +1,34 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { negotiatePrice } from '../services/pricingApi';
-
+import { validatePromo } from '../services/promoApi';
 export default function NegotiationScreen({ route, navigation }) {
-  const { order_id } = route.params || {};
+  const { order_id, estimatedPrice, distance } = route.params || {};
   const [requestedPrice, setRequestedPrice] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [discount, setDiscount] = useState(0);
   const [loading, setLoading] = useState(false);
-  const originalPrice = 20000; // Mock estimate for demo
+  const [checkingPromo, setCheckingPromo] = useState(false);
+  const originalPrice = estimatedPrice || 20000; 
+
+  const handleApplyPromo = async () => {
+    if (!promoCode) return;
+    try {
+      setCheckingPromo(true);
+      const res = await validatePromo(promoCode);
+      if (res.IsValid || res.is_valid) {
+        setDiscount(res.Discount || res.discount || 10000);
+        Alert.alert('Sukses', 'Promo berhasil diterapkan!');
+      } else {
+        Alert.alert('Gagal', 'Kode promo tidak valid atau sudah kadaluarsa');
+        setDiscount(0);
+      }
+    } catch (err) {
+      // Global error handling
+    } finally {
+      setCheckingPromo(false);
+    }
+  };
 
   const handleNegotiate = async () => {
     if (!requestedPrice) {
@@ -45,6 +67,24 @@ export default function NegotiationScreen({ route, navigation }) {
         <View style={styles.infoBox}>
           <Text style={styles.infoLabel}>Estimasi Harga Normal</Text>
           <Text style={styles.infoPrice}>Rp {originalPrice.toLocaleString('id-ID')}</Text>
+          {discount > 0 && (
+            <Text style={styles.discountText}>Diskon Promo: -Rp {discount.toLocaleString('id-ID')}</Text>
+          )}
+        </View>
+
+        <Text style={styles.inputLabel}>Kode Promo (Opsional)</Text>
+        <View style={styles.promoContainer}>
+          <TextInput
+            style={[styles.input, { flex: 1, marginBottom: 0 }]}
+            placeholder="Ketik kode promo"
+            placeholderTextColor="#999"
+            value={promoCode}
+            onChangeText={setPromoCode}
+            autoCapitalize="characters"
+          />
+          <TouchableOpacity style={styles.promoButton} onPress={handleApplyPromo} disabled={checkingPromo}>
+            {checkingPromo ? <ActivityIndicator color="#fff" /> : <Text style={styles.promoButtonText}>Gunakan</Text>}
+          </TouchableOpacity>
         </View>
 
         <Text style={styles.inputLabel}>Harga Tawaran Anda</Text>
@@ -78,7 +118,11 @@ const styles = StyleSheet.create({
   infoBox: { backgroundColor: '#FFF5E5', padding: 15, borderRadius: 12, alignItems: 'center', marginBottom: 25, borderWidth: 1, borderColor: '#FFE0B2' },
   infoLabel: { fontSize: 14, color: '#D97706', fontWeight: '600', marginBottom: 4 },
   infoPrice: { fontSize: 22, fontWeight: '900', color: '#B45309' },
-  inputLabel: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 8, marginLeft: 5 },
+  discountText: { fontSize: 14, color: '#16A34A', fontWeight: 'bold', marginTop: 4 },
+  inputLabel: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 8, marginLeft: 5, marginTop: 10 },
+  promoContainer: { flexDirection: 'row', marginBottom: 20 },
+  promoButton: { backgroundColor: '#10B981', paddingHorizontal: 15, justifyContent: 'center', borderRadius: 12, marginLeft: 10 },
+  promoButtonText: { color: '#fff', fontWeight: 'bold' },
   input: { backgroundColor: '#F9FAFC', borderWidth: 1, borderColor: '#E2E8F0', padding: 15, marginBottom: 20, borderRadius: 12, fontSize: 18, color: '#333', textAlign: 'center', fontWeight: 'bold' },
   primaryButton: { backgroundColor: '#FF9500', paddingVertical: 16, borderRadius: 12, alignItems: 'center', shadowColor: '#FF9500', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.3, shadowRadius: 15, elevation: 5 },
   primaryButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
