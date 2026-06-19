@@ -48,7 +48,7 @@ export default function CreateOrderScreen({ navigation }) {
       });
       setEstimatedPrice(priceRes.estimated_price);
     } catch (err) {
-      Alert.alert('Gagal', 'Tidak dapat menemukan rute untuk lokasi ini. Coba gunakan kata kunci yang lebih spesifik atau kota saja.');
+      alert('Gagal! Tidak dapat menemukan rute untuk lokasi ini. Coba gunakan kata kunci yang lebih spesifik atau kota saja.');
     } finally {
       setEstimating(false);
     }
