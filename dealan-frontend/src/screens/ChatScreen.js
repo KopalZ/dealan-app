@@ -45,8 +45,8 @@ export default function ChatScreen({ route }) {
   const sendMessage = () => {
     if (!inputText.trim() || !ws.current) return;
     const messagePayload = {
-      order_id,
-      sender_id: user_id,
+      order_id: parseInt(order_id, 10),
+      sender_id: String(user_id),
       role: role,
       content: inputText
     };

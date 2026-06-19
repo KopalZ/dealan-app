@@ -11,6 +11,8 @@ export default function NegotiationScreen({ route, navigation }) {
   const [checkingPromo, setCheckingPromo] = useState(false);
   const originalPrice = estimatedPrice || 20000; 
 
+  const vouchers = ['DEALAN10', 'DEALANHEMAT', 'GRATISONGKIR'];
+
   const handleApplyPromo = async () => {
     if (!promoCode) return;
     try {
@@ -72,11 +74,11 @@ export default function NegotiationScreen({ route, navigation }) {
           )}
         </View>
 
-        <Text style={styles.inputLabel}>Kode Promo (Opsional)</Text>
+        <Text style={styles.inputLabel}>Kode Promo atau Voucher (Opsional)</Text>
         <View style={styles.promoContainer}>
           <TextInput
-            style={[styles.input, { flex: 1, marginBottom: 0 }]}
-            placeholder="Ketik kode promo"
+            style={[styles.input, { flex: 1, marginBottom: 0, textAlign: 'left' }]}
+            placeholder="Ketik atau pilih voucher"
             placeholderTextColor="#999"
             value={promoCode}
             onChangeText={setPromoCode}
@@ -85,6 +87,18 @@ export default function NegotiationScreen({ route, navigation }) {
           <TouchableOpacity style={styles.promoButton} onPress={handleApplyPromo} disabled={checkingPromo}>
             {checkingPromo ? <ActivityIndicator color="#fff" /> : <Text style={styles.promoButtonText}>Gunakan</Text>}
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.voucherScroll}>
+          {vouchers.map((voucher) => (
+            <TouchableOpacity 
+              key={voucher} 
+              style={[styles.voucherChip, promoCode === voucher && styles.voucherChipActive]} 
+              onPress={() => setPromoCode(voucher)}
+            >
+              <Text style={[styles.voucherText, promoCode === voucher && styles.voucherTextActive]}>🎟️ {voucher}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
         <Text style={styles.inputLabel}>Harga Tawaran Anda</Text>
@@ -120,9 +134,14 @@ const styles = StyleSheet.create({
   infoPrice: { fontSize: 22, fontWeight: '900', color: '#B45309' },
   discountText: { fontSize: 14, color: '#16A34A', fontWeight: 'bold', marginTop: 4 },
   inputLabel: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 8, marginLeft: 5, marginTop: 10 },
-  promoContainer: { flexDirection: 'row', marginBottom: 20 },
+  promoContainer: { flexDirection: 'row', marginBottom: 10 },
   promoButton: { backgroundColor: '#10B981', paddingHorizontal: 15, justifyContent: 'center', borderRadius: 12, marginLeft: 10 },
   promoButtonText: { color: '#fff', fontWeight: 'bold' },
+  voucherScroll: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20 },
+  voucherChip: { backgroundColor: '#F3F4F6', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, marginRight: 8, marginBottom: 8, borderWidth: 1, borderColor: '#E5E7EB' },
+  voucherChipActive: { backgroundColor: '#D1FAE5', borderColor: '#10B981' },
+  voucherText: { fontSize: 12, color: '#4B5563', fontWeight: 'bold' },
+  voucherTextActive: { color: '#065F46' },
   input: { backgroundColor: '#F9FAFC', borderWidth: 1, borderColor: '#E2E8F0', padding: 15, marginBottom: 20, borderRadius: 12, fontSize: 18, color: '#333', textAlign: 'center', fontWeight: 'bold' },
   primaryButton: { backgroundColor: '#FF9500', paddingVertical: 16, borderRadius: 12, alignItems: 'center', shadowColor: '#FF9500', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.3, shadowRadius: 15, elevation: 5 },
   primaryButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },

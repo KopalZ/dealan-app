@@ -17,7 +17,7 @@ export default function HistoryScreen({ navigation }) {
       const orderId = await AsyncStorage.getItem('latestOrderId');
       if (orderId) {
         setHistory(prev => [
-          { id: orderId, service: 'Dealan Service', date: new Date().toISOString().split('T')[0], status: 'Sedang Proses', price: 'N/A' },
+          { id: orderId, service: 'Dealan Service', date: new Date().toISOString().split('T')[0], status: 'Selesai', price: 'Rp 20.000' },
           ...prev
         ]);
       }

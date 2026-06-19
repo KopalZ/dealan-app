@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { processPayment } from '../services/paymentApi';
 
 export default function PaymentScreen({ route, navigation }) {
@@ -19,6 +20,11 @@ export default function PaymentScreen({ route, navigation }) {
       };
 
       const res = await processPayment(payload);
+      
+      // Clear data so driver dashboard resets
+      await AsyncStorage.removeItem('latestOrderId');
+      await AsyncStorage.removeItem('driverAcceptedOrder');
+
       alert('Pembayaran Berhasil / Terproses');
       navigation.navigate('Rating', { order_id: order_id, driver_id: driver_id });
     } catch (err) {
