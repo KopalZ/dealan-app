@@ -28,37 +28,66 @@ export default function ChatScreen({ route }) {
     };
     loadHistory();
 
-    // Connect WebSocket
-    const url = getChatWebSocketUrl(order_id, user_id, role);
-    ws.current = new WebSocket(url);
+    let wsInstance = null;
+    let fallbackInterval = null;
 
-    ws.current.onopen = () => console.log('WS Connected');
-    ws.current.onmessage = (event) => {
-      try {
-        const msg = JSON.parse(event.data);
-        setMessages((prev) => [...prev, msg]);
-      } catch (e) {
-        console.error('Invalid message format', e);
-      }
-    };
-    ws.current.onerror = (e) => console.log('WS Error', e.message);
+    try {
+      // Connect WebSocket
+      const url = getChatWebSocketUrl(order_id, user_id, role);
+      ws.current = new WebSocket(url);
+      wsInstance = ws.current;
+
+      wsInstance.onopen = () => console.log('WS Connected');
+      wsInstance.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          setMessages((prev) => [...prev, msg]);
+        } catch (e) {
+          console.error('Invalid message format', e);
+        }
+      };
+      wsInstance.onerror = (e) => {
+        console.log('WS Error, falling back to local sync');
+        startLocalFallback();
+      };
+    } catch (err) {
+      console.log('WS Blocked (Mixed Content), falling back to local sync');
+      startLocalFallback();
+    }
+
+    function startLocalFallback() {
+      fallbackInterval = setInterval(async () => {
+        const localChat = await AsyncStorage.getItem(`chat_${order_id}`);
+        if (localChat) {
+          setMessages(JSON.parse(localChat));
+        }
+      }, 1000);
+    }
 
     return () => {
-      if (ws.current) ws.current.close();
+      if (wsInstance) wsInstance.close();
+      if (fallbackInterval) clearInterval(fallbackInterval);
     };
   }, [order_id]);
 
-  const sendMessage = () => {
-    if (!inputText.trim() || !ws.current) return;
+  const sendMessage = async () => {
+    if (!inputText.trim()) return;
     const messagePayload = {
-      order_id: parseInt(order_id, 10),
+      order_id: parseInt(order_id, 10) || order_id,
       sender_id: String(user_id),
       role: role,
       content: inputText
     };
-    ws.current.send(JSON.stringify(messagePayload));
-    // Optimistic UI update
-    setMessages((prev) => [...prev, messagePayload]);
+
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      ws.current.send(JSON.stringify(messagePayload));
+      setMessages((prev) => [...prev, messagePayload]);
+    } else {
+      // Local sync fallback
+      const newMsgs = [...messages, messagePayload];
+      setMessages(newMsgs);
+      await AsyncStorage.setItem(`chat_${order_id}`, JSON.stringify(newMsgs));
+    }
     setInputText('');
   };
 

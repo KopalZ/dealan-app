@@ -42,6 +42,21 @@ export default function CreateOrderScreen({ navigation }) {
     return null;
   };
 
+  const getOSRMRoute = async (lon1, lat1, lon2, lat2) => {
+    try {
+      const url = `https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.code === 'Ok' && data.routes.length > 0) {
+        return {
+          distance: data.routes[0].distance / 1000, // km
+          duration: data.routes[0].duration // seconds
+        };
+      }
+    } catch (e) {}
+    return null;
+  };
+
   const handleCheckEstimate = async () => {
     if (!origin || !destinations[0]) {
       alert('Harap isi titik jemput dan minimal 1 tujuan');
@@ -54,15 +69,20 @@ export default function CreateOrderScreen({ navigation }) {
       try {
         mapRes = await getRoute(origin, destinations[destinations.length - 1]);
       } catch (mapErr) {
-        // Fallback: Use direct OSM Nominatim and Haversine Distance
+        // Fallback: Use direct OSM Nominatim and OSRM
         try {
           const coord1 = await geocode(origin);
           const coord2 = await geocode(destinations[destinations.length - 1]);
           if (coord1 && coord2) {
-             const dist = getHaversineDistance(coord1.lat, coord1.lon, coord2.lat, coord2.lon);
-             // Multiply by 1.3 to roughly estimate road distance vs straight line
-             const roadDist = Math.max(1, Math.round((dist * 1.3) * 10) / 10);
-             mapRes = { distance: roadDist, duration: (roadDist / 30) * 3600 };
+             const osrm = await getOSRMRoute(coord1.lon, coord1.lat, coord2.lon, coord2.lat);
+             if (osrm) {
+               const roadDist = Math.max(1, Math.round(osrm.distance * 10) / 10);
+               mapRes = { distance: roadDist, duration: osrm.duration };
+             } else {
+               const dist = getHaversineDistance(coord1.lat, coord1.lon, coord2.lat, coord2.lon);
+               const roadDist = Math.max(1, Math.round((dist * 1.3) * 10) / 10);
+               mapRes = { distance: roadDist, duration: (roadDist / 30) * 3600 };
+             }
           } else {
              throw new Error('Fallback failed');
           }

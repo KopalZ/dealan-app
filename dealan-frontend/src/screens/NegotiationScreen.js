@@ -10,6 +10,7 @@ export default function NegotiationScreen({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   const [checkingPromo, setCheckingPromo] = useState(false);
   const originalPrice = estimatedPrice || 20000; 
+  const finalPrice = Math.max(0, originalPrice - discount);
 
   const vouchers = ['DEALAN10', 'DEALANHEMAT', 'GRATISONGKIR'];
 
@@ -41,7 +42,7 @@ export default function NegotiationScreen({ route, navigation }) {
       setLoading(true);
       const payload = {
         order_id: String(order_id),
-        original_price: originalPrice,
+        original_price: finalPrice,
         requested_price: parseFloat(requestedPrice)
       };
 
@@ -67,8 +68,8 @@ export default function NegotiationScreen({ route, navigation }) {
         <Text style={styles.subtitle}>Negosiasikan harga terbaik Anda dengan Driver</Text>
         
         <View style={styles.infoBox}>
-          <Text style={styles.infoLabel}>Estimasi Harga Normal</Text>
-          <Text style={styles.infoPrice}>Rp {originalPrice.toLocaleString('id-ID')}</Text>
+          <Text style={styles.infoLabel}>{discount > 0 ? 'Harga Setelah Diskon' : 'Estimasi Harga Normal'}</Text>
+          <Text style={styles.infoPrice}>Rp {finalPrice.toLocaleString('id-ID')}</Text>
           {discount > 0 && (
             <Text style={styles.discountText}>Diskon Promo: -Rp {discount.toLocaleString('id-ID')}</Text>
           )}
