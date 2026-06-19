@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createOrder } from '../services/orderApi';
 import { getRoute } from '../services/mapApi';
@@ -48,7 +48,7 @@ export default function CreateOrderScreen({ navigation }) {
       });
       setEstimatedPrice(priceRes.estimated_price);
     } catch (err) {
-      // Global error handling takes care of it
+      Alert.alert('Gagal', 'Tidak dapat menemukan rute untuk lokasi ini. Coba gunakan kata kunci yang lebih spesifik atau kota saja.');
     } finally {
       setEstimating(false);
     }
@@ -168,9 +168,18 @@ export default function CreateOrderScreen({ navigation }) {
       {routeInfo && (
         <View style={styles.mapMock}>
           <Text style={styles.mapIcon}>🗺️</Text>
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.mapText}>Rute Optimal Ditemukan!</Text>
             <Text style={styles.mapDetail}>Jarak: {routeInfo.distance} km • Waktu: {Math.round(routeInfo.duration/60)} menit</Text>
+            <TouchableOpacity 
+              style={{ marginTop: 8 }}
+              onPress={() => {
+                const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destinations[destinations.length - 1])}`;
+                Linking.openURL(url);
+              }}
+            >
+              <Text style={{ color: '#007AFF', fontWeight: 'bold' }}>Lihat Rute di Google Maps ↗</Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}

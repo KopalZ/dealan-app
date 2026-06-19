@@ -6,6 +6,7 @@ import { login } from '../services/authApi';
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('user'); // 'user' | 'driver'
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -18,8 +19,13 @@ export default function LoginScreen({ navigation }) {
       const res = await login(email, password);
       if (res.token) {
         await AsyncStorage.setItem('userToken', res.token);
-        alert('Login berhasil');
-        navigation.replace('CreateOrder');
+        await AsyncStorage.setItem('userEmail', email); // For history screen mock
+        alert(`Login berhasil sebagai ${role === 'driver' ? 'Driver' : 'Penumpang'}`);
+        if (role === 'driver') {
+          navigation.replace('DriverDashboard');
+        } else {
+          navigation.replace('CreateOrder');
+        }
       }
     } catch (err) {
       // Error handled by global interceptor in api.js
@@ -51,6 +57,21 @@ export default function LoginScreen({ navigation }) {
           onChangeText={setPassword}
           secureTextEntry
         />
+        <View style={styles.roleContainer}>
+          <TouchableOpacity 
+            style={[styles.roleButton, role === 'user' && styles.roleButtonActive]} 
+            onPress={() => setRole('user')}
+          >
+            <Text style={[styles.roleText, role === 'user' && styles.roleTextActive]}>👤 Penumpang</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.roleButton, role === 'driver' && styles.roleButtonActive]} 
+            onPress={() => setRole('driver')}
+          >
+            <Text style={[styles.roleText, role === 'driver' && styles.roleTextActive]}>🚗 Mitra Driver</Text>
+          </TouchableOpacity>
+        </View>
+
         {loading ? (
           <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
         ) : (
@@ -60,9 +81,6 @@ export default function LoginScreen({ navigation }) {
         )}
         <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Register')}>
           <Text style={styles.secondaryButtonText}>Belum punya akun? Daftar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.secondaryButton, { marginTop: 15 }]} onPress={() => navigation.navigate('DriverDashboard')}>
-          <Text style={styles.driverButtonText}>🚗 Login sebagai Mitra Driver</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -79,6 +97,10 @@ const styles = StyleSheet.create({
   primaryButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   secondaryButton: { paddingVertical: 15, alignItems: 'center', marginTop: 5 },
   secondaryButtonText: { color: '#007AFF', fontSize: 16, fontWeight: '600' },
-  driverButtonText: { color: '#10B981', fontSize: 16, fontWeight: 'bold' },
+  roleContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
+  roleButton: { flex: 1, paddingVertical: 12, borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 10, alignItems: 'center', marginHorizontal: 5 },
+  roleButtonActive: { backgroundColor: '#E0F2FE', borderColor: '#0284C7' },
+  roleText: { color: '#64748B', fontWeight: 'bold' },
+  roleTextActive: { color: '#0284C7' },
   loader: { marginVertical: 20 }
 });
